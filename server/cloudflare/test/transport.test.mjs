@@ -89,3 +89,25 @@ test('a guest joining before host creation cannot seize the reserved room',async
   assert.equal(pop(guest,'joined').code,reservation.code);
   assert.equal(host.room.core.s.players.length,2);
 });
+
+test('restoration starts host failover when host socket vanished before close could persist',async()=>{
+  const env=new TestEnv(),reservation=await init(env),clients=[];
+  for(let i=0;i<4;i++){
+    const c=await connect(env,reservation.code);
+    await c.send(i?{action:'join',name:'P'+i}:{action:'create',name:'Host',createToken:reservation.createToken});
+    clients.push(c);
+  }
+  const hostId=pop(clients[0],'joined').id;
+  await clients[0].send({action:'start',game:'social',mode:'majority',duration:'quick'});
+  const ctx=env.rooms.get(reservation.code).ctx;
+  // Model an unexpected shutdown between the socket loss and a close callback:
+  // storage has the prior connected state, but this socket is absent on restart.
+  clients[0].server.close();
+  const recovered=new PartyRoom(ctx,env);await recovered.ready;
+  assert.equal(recovered.core.player(hostId).connected,false);
+  assert.ok(recovered.core.s.hostDisconnectedAt,'host failover deadline must be restored');
+  assert.ok(ctx.storage.alarm<=Date.now()+16_000,'host failover alarm should be scheduled promptly');
+  recovered.core.s.hostDisconnectedAt=Date.now()-16_000;
+  await recovered.alarm();
+  assert.equal(recovered.core.s.host,pop(clients[1],'joined').id);
+});
