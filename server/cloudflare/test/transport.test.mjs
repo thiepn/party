@@ -68,3 +68,10 @@ test('offline rooms retain idle-TTL cleanup and disconnected hosts keep 15-secon
   for(const c of clients.slice(1))await room.handleClose(c.server);
   assert.ok(room.ctx.storage.alarm>=Date.now()+2*60*60*1000-1500,'all-offline room must retain 2h idle cleanup');
 });
+
+test('room client links one-phone play to the Vercel static root',async()=>{
+  const {readFileSync}=await import('node:fs');
+  const client=readFileSync(new URL('../../../public/room/client.js',import.meta.url),'utf8');
+  assert.match(client,/href="\/" class="chip"/,'the static app is deployed at /, not /offline');
+  assert.doesNotMatch(client,/href="\/offline"/);
+});
