@@ -120,7 +120,7 @@
     if(scope&&reconnectDraft&&scope!==reconnectDraft.scope)reconnectDraft=null;
     lastKey=key;lastScope=scope;
     document.documentElement.lang=locale;
-    const header=`<header class="top"><div class="brand">✳ CHAOS <span>CLUB</span> </div><div class="header-actions"><button class="chip" data-action="language" aria-label="${T('Switch language','Sprache ändern')}">${locale.toUpperCase()} ⇄</button><a href="/offline" class="chip">${T('One phone','Ein Handy')}</a></div></header>`;
+    const header=`<header class="top"><div class="brand">✳ CHAOS <span>CLUB</span> </div><div class="header-actions"><button class="chip" data-action="language" aria-label="${T('Switch language','Sprache ändern')}">${locale.toUpperCase()} ⇄</button><a href="/" class="chip">${T('One phone','Ein Handy')}</a></div></header>`;
     const body=!state?landing():game();
     root.innerHTML=`<div class="shell">${header}${error?`<div role="alert" class="notice">${esc(error)}</div>`:''}${body}${(!state||state.stage==='lobby')?`<p class="foot">${T('No accounts. Secure online rooms. Do not share your private reconnect credentials.','Keine Konten. Sichere Online-Räume. Gib deine privaten Zugangsdaten zur Wiederverbindung nicht weiter.')}</p>`:''}</div>`;
     for(const el of document.querySelectorAll('[data-draft]')){
