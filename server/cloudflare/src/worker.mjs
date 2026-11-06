@@ -69,7 +69,12 @@ export class PartyRoom {
       await this.broadcast();
     }catch(error){this.send(ws,{type:'error',message:error instanceof RoomError?error.message:'Invalid room operation.'});}
   }
-  async webSocketClose(ws){await this.handleClose(ws);}
+  async webSocketClose(ws,code,reason){
+    // Older Workers compatibility dates require an explicit reciprocal Close frame.
+    // On runtimes with automatic close replies this is a harmless no-op.
+    try{ws.close(code||1000,reason||'');}catch{}
+    await this.handleClose(ws);
+  }
   async webSocketError(ws){await this.handleClose(ws);}
   async handleClose(ws){await this.ready;if(!this.core)return;const a=ws.deserializeAttachment();if(!a?.pid)return;const p=this.core.player(a.pid);if(!p||p.nonce!==a.nonce)return;p.connected=false;if(p.id===this.core.s.host)this.core.s.hostDisconnectedAt=Date.now();await this.broadcast();}
   async alarm(){await this.ready;if(!this.core){await this.ctx.storage.deleteAll();this.createToken=null;return;}const s=this.core.s,now=Date.now();if(now>this.createdAt+MAX_AGE||(!s.players.some(p=>p.connected)&&now>s.modifiedAt+TTL)){for(const ws of this.ctx.getWebSockets())try{ws.close(4000,'Room expired');}catch{}await this.ctx.storage.deleteAll();this.core=null;return;}
