@@ -3,6 +3,7 @@ import prompts from './public-prompts.json' with {type:'json'};
 import {RoomCore,RoomError,safeString} from './room-core.mjs';
 const ROOM_RE=/^[A-HJ-NP-Z2-9]{8}$/;const CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const TTL=2*60*60*1000,MAX_AGE=12*60*60*1000,FAILOVER=15*1000;
+class RoomWriteError extends Error {}
 function randomCode(){const bytes=new Uint8Array(8);crypto.getRandomValues(bytes);return [...bytes].map(x=>CHARS[x%CHARS.length]).join('');}
 function secret(){const v=new Uint8Array(32);crypto.getRandomValues(v);return [...v].map(x=>x.toString(16).padStart(2,'0')).join('');}
 function allowedOrigin(req,env){const v=req.headers.get('Origin');const allowed=new Set(['https://party.thiepn.dev']);if(env.ALLOW_LOCAL_DEV==='true')for(const x of ['http://localhost:8080','http://127.0.0.1:8080'])allowed.add(x);return v&&allowed.has(v)?v:null;}
@@ -36,7 +37,7 @@ export class PartyRoom {
     for(const ws of this.ctx.getWebSockets()){const a=ws.deserializeAttachment();if(!a?.pid||!a?.nonce)continue;const p=this.core.player(a.pid);if(p&&p.nonce===a.nonce)p.connected=true;}
   }
   async getContent(){if(this.content)return this.content;const base=structuredClone(prompts);const file=await this.env.FACTS.get('chaos-club/room-facts.json');if(!file)throw new RoomError('Private Fact Trap content not configured.');const facts=await file.json();for(const x of base.bluff.fact){const f=facts[x.factId];if(!f?.answer?.en||!f?.answer?.de||!f?.source)throw new RoomError('Incomplete private facts.');x.answer=f.answer;x.source=f.source;}this.content=base;return base;}
-  async save(){if(!this.core)return;const s=this.core.s;s.createdAt=this.createdAt;s.createToken=this.createToken;await this.ctx.storage.put('room',s);await this.schedule();}
+  async save(){if(!this.core)return;const s=this.core.s;s.createdAt=this.createdAt;s.createToken=this.createToken;try{await this.ctx.storage.put('room',s);}catch{throw new RoomWriteError('Room state could not be persisted.');}await this.schedule();}
   async schedule(){const s=this.core?.s;if(!s)return;const connected=s.players.some(p=>p.connected);let due=this.createdAt+MAX_AGE;
     // Idle TTL only expires rooms without connected seats. Scheduling it for an active room
     // would cause a repeated one-second alarm after two hours of no state changes.
@@ -52,7 +53,9 @@ export class PartyRoom {
   send(ws,data){try{ws.send(JSON.stringify(data));}catch{}}
   async broadcast(){this.core.tick();await this.save();for(const p of this.core.s.players){if(p.connected){const ws=this.wsFor(p);if(ws)this.send(ws,this.core.view(p.id));}}}
   async webSocketMessage(ws,message){await this.ready;if(typeof message!=='string'||message.length>8192){this.send(ws,{type:'error',message:'Invalid message size.'});return;}
+    let rollback=null;
     try{const data=JSON.parse(message);if(!data||typeof data!=='object'||Array.isArray(data))throw new RoomError('Invalid message.');const s=this.core.s,old=ws.deserializeAttachment()||{};const action=data.action;
+      rollback={state:structuredClone(s),createToken:this.createToken,attachment:structuredClone(old)};
       if(!old.pid){if(action==='create'){if(s.players.length||this.createToken===null||data.createToken!==this.createToken)throw new RoomError('Invalid room creation credential.');const name=safeString(data.name,24)||'Host',id=crypto.randomUUID(),token=secret(),nonce=crypto.randomUUID();s.players.push({id,token,name,connected:true,nonce});s.host=id;this.createToken=null;ws.serializeAttachment({pid:id,nonce});await this.save();this.send(ws,{type:'joined',code:s.code,id,token});}
         else if(action==='join'){if(!s.host)throw new RoomError('Wait for the host to create this room.');if(s.stage!=='lobby')throw new RoomError('This session has started. Reconnect with your saved seat.');if(s.players.length>=6)throw new RoomError('Room is full (maximum 6).');const name=safeString(data.name,24);if(!name)throw new RoomError('Enter a name.');const id=crypto.randomUUID(),token=secret(),nonce=crypto.randomUUID();s.players.push({id,token,name,connected:true,nonce});ws.serializeAttachment({pid:id,nonce});await this.save();this.send(ws,{type:'joined',code:s.code,id,token});}
         else if(action==='resume'){const p=this.core.player(data.id);if(!p||typeof data.token!=='string'||data.token!==p.token)throw new RoomError('Invalid reconnect credentials.');const previous=this.wsFor(p),nonce=crypto.randomUUID();p.token=secret();p.nonce=nonce;p.connected=true;if(s.host===p.id)s.hostDisconnectedAt=null;ws.serializeAttachment({pid:p.id,nonce});await this.save();if(previous&&previous!==ws)try{previous.close(4001,'Session moved');}catch{}this.send(ws,{type:'joined',code:s.code,id:p.id,token:p.token});}
@@ -60,7 +63,7 @@ export class PartyRoom {
       }
       const p=this.core.player(old.pid);if(!p||p.nonce!==old.nonce||!p.connected)throw new RoomError('Connection replaced.');
       if(['start','next','skip','finish','open_vote','lobby','kick','transfer'].includes(action))this.core.hostCheck(p.id);
-      if(action==='start'){this.core.content=await this.getContent();this.core.start(p.id,data.game,data.mode,data.duration,data.language||'en');}
+      if(action==='start'){this.core.content=await this.getContent();rollback.state=structuredClone(this.core.s);rollback.createToken=this.createToken;this.core.start(p.id,data.game,data.mode,data.duration,data.language||'en');}
       else if(action==='submit'){if(data.round!==s.round)throw new RoomError('Old round. Refresh your screen.');this.core.submit(p.id,data);}
       else if(action==='open_vote')this.core.openLive(p.id);
       else if(action==='next')this.core.next(p.id);
@@ -72,7 +75,14 @@ export class PartyRoom {
       else if(action==='ping'){return;}
       else throw new RoomError('Invalid action.');
       await this.broadcast();
-    }catch(error){this.send(ws,{type:'error',message:error instanceof RoomError?error.message:'Invalid room operation.'});}
+    }catch(error){
+      if(error instanceof RoomWriteError&&rollback){
+        this.core.s=rollback.state;
+        this.createToken=rollback.createToken;
+        try{ws.serializeAttachment(rollback.attachment);}catch{}
+      }
+      this.send(ws,{type:'error',message:error instanceof RoomError?error.message:'Invalid room operation.'});
+    }
   }
   async webSocketClose(ws,code,reason){
     // Older Workers compatibility dates require an explicit reciprocal Close frame.
