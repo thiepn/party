@@ -45,8 +45,9 @@
     if(sock&&sock.readyState===WebSocket.OPEN)sock.close();
     stopReconnect=false;connecting=true;error='';render();
     const ws=new WebSocket(socketUrl(code));sock=ws;
-    ws.onopen=()=>{delay=750;ws.send(JSON.stringify(message));};
+    ws.onopen=()=>{if(ws!==sock)return;delay=750;ws.send(JSON.stringify(message));};
     ws.onmessage=(event)=>{
+      if(ws!==sock)return;
       let msg;try{msg=JSON.parse(event.data);}catch{return;}
       if(msg.type==='joined'){
         seat={code:msg.code,id:msg.id,token:msg.token};localStorage.setItem(storeKey,JSON.stringify(seat));
@@ -58,13 +59,17 @@
         render();
       }else if(msg.type==='error'){
         if(msg.message==='Invalid reconnect credentials.'){
-          seat=null;state=null;stopReconnect=true;localStorage.removeItem(storeKey);
+          // A newer tab may already have rotated this seat's token in shared storage.
+          // Only discard credentials that belong to this rejected connection.
+          let stored=null;try{stored=JSON.parse(localStorage.getItem(storeKey)||'null');}catch{}
+          if(stored&&seat&&stored.code===seat.code&&stored.id===seat.id&&stored.token===seat.token)localStorage.removeItem(storeKey);
+          seat=null;state=null;stopReconnect=true;
           error=T('This seat was moved or the room restarted. Join a new seat or ask the host.','Dieser Platz wurde verschoben oder der Raumserver neu gestartet. Tritt neu bei oder frage den Host.');
         }else error=msg.message;
         pendingSubmit=null;connecting=false;render();
       }
     };
-    ws.onerror=()=>{error=T('Cannot reach the secure room service.','Der sichere Raumserver ist nicht erreichbar.');};
+    ws.onerror=()=>{if(ws!==sock)return;error=T('Cannot reach the secure room service.','Der sichere Raumserver ist nicht erreichbar.');};
     ws.onclose=()=>{
       if(ws!==sock)return;
       connecting=false;pendingSubmit=null;
