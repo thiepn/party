@@ -19,7 +19,7 @@ export class RoomCore {
   start(pid,game,mode,duration,lang='en'){
     const s=this.s;this.hostCheck(pid);if(!['lobby','end'].includes(s.stage))throw new RoomError('A session is already running.');
     if(s.players.length<4||s.players.length>6||s.players.some(p=>!p.connected))throw new RoomError('Start requires 4–6 connected players. / Zum Starten braucht ihr 4–6 verbundene Personen.');
-    if(!MODES[game]?.includes(mode)||!(duration in DURATIONS)||!['en','de'].includes(lang))throw new RoomError('Invalid game or configuration.');
+    if(!MODES[game]?.includes(mode)||!Object.hasOwn(DURATIONS,duration)||!['en','de'].includes(lang))throw new RoomError('Invalid game or configuration.');
     Object.assign(s,{game,mode,duration,lang,total:DURATIONS[duration][game],round:0,completed:0,skipped:0,points:Object.fromEntries(this.members().map(id=>[id,0]))});
     s.deck=this.chooseDeck();s.comedyPairs=game==='comedy'?duelSchedule(s.players.length,s.total):[];this.newRound();
   }
