@@ -77,7 +77,7 @@ for(const n of [4,5,6]){
     assert.equal(voted.item.source,undefined,'private source before reveal');
     assert.equal(voted.item.truthIndex,undefined,'private answer position before reveal');
     replacement.send({action:'submit',round:0,choice:0});
-    const reveal=await replacement.next(m=>m.type==='state'&&m.stage==='reveal'&&m.round===0);
+    const reveal=await replacement.next(m=>m.type==='state'&&m.game==='bluff'&&m.stage==='reveal'&&m.round===0);
     assert.ok(reveal.item.source?.url?.startsWith('https://'),'source available after reveal');
     if(n===4){
       replacement.send({action:'transfer',target:clients[1].joined.id});
