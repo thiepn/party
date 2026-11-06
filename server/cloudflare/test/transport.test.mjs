@@ -129,6 +129,7 @@ test('storage write failure must not broadcast an uncommitted host transfer',asy
     assert.equal(clients[1].cli.messages.slice(initial).filter(m=>m.type==='state'&&m.host===target).length,0,
       'never publish a new host before durable storage confirms it');
     assert.equal(pop(clients[0],'error').message,'Invalid room operation.');
+    assert.notEqual(clients[0].room.core.s.host,target,'failed storage write must roll back in-memory host');
   }finally{store.put=originalPut;}
 });
 
@@ -142,5 +143,7 @@ test('storage write failure must not disclose an unpersisted seat token',async()
     assert.equal(guest.cli.messages.filter(m=>m.type==='joined').length,0,
       'do not return a seat credential before persistence succeeds');
     assert.equal(pop(guest,'error').message,'Invalid room operation.');
+    assert.equal(guest.room.core.s.players.length,0,'failed seat write must remove unpersisted player');
+    assert.equal(guest.room.createToken,reservation.createToken,'failed create must restore reservation credential');
   }finally{store.put=originalPut;}
 });
