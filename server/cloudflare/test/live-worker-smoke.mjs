@@ -54,15 +54,26 @@ for(const n of [4,5,6]){
     host.send({action:'start',game:'social',mode:'majority',duration:'quick',language:'en'});
     await host.next(m=>m.type==='state'&&m.stage==='answer'&&m.round===0);
     for(let i=0;i<n;i++)clients[i].send({action:'submit',round:0,choice:i%2});
+    // Real concurrent WebSocket traffic: repeat a submitted answer and send a
+    // future-round answer before the first round has finished dispatching.
+    clients[0].send({action:'submit',round:0,choice:1});
+    clients[1].send({action:'submit',round:999,choice:1});
+    let scores;
     for(const c of clients){
       const view=await c.next(m=>m.type==='state'&&m.stage==='reveal'&&m.round===0);
       assert.equal(view.players.length,n);assert.equal(view.completed,1);
+      if(c===host)scores=view.players.map(p=>p.points);
     }
+    assert.match((await clients[0].next(m=>m.type==='error')).message,/Already|answer|stage|round/i);
+    assert.match((await clients[1].next(m=>m.type==='error')).message,/Old round/i);
     const replacement=connection(allocation.code);await replacement.ready;clients.push(replacement);
     replacement.send({action:'resume',id:host.joined.id,token:host.joined.token,code:allocation.code});
     const newSeat=await replacement.next(m=>m.type==='joined');
     assert.notEqual(newSeat.token,host.joined.token);
     assert.equal(newSeat.id,host.joined.id);
+    const recoveredRound=await replacement.next(m=>m.type==='state'&&m.game==='social'&&m.stage==='reveal'&&m.round===0);
+    assert.equal(recoveredRound.completed,1);
+    assert.deepEqual(recoveredRound.players.map(p=>p.points),scores,'duplicate/out-of-order submissions must not change points');
     const thief=connection(allocation.code);await thief.ready;clients.push(thief);
     thief.send({action:'resume',id:host.joined.id,token:host.joined.token,code:allocation.code});
     assert.match((await thief.next(m=>m.type==='error')).message,/Invalid reconnect/);
