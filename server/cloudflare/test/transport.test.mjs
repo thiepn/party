@@ -19,3 +19,32 @@ test('resume rotates token and invalidates replaced tab without losing draft or 
 test('host transfer and no unmarked client ownership of actions',async()=>{const env=new TestEnv(),room=await init(env),clients=[];for(let i=0;i<4;i++){const c=await connect(env,room.code);await c.send(i?{action:'join',code:room.code,name:'P'+i}:{action:'create',name:'Host',createToken:room.createToken});clients.push(c);}const p1=pop(clients[1],'joined').id;await clients[1].send({action:'start',game:'social',mode:'mixed',duration:'quick'});assert.match(pop(clients[1],'error').message,/host/);await clients[0].send({action:'transfer',target:p1});assert.equal(pop(clients[1],'state').host,p1);await clients[1].send({action:'start',game:'social',mode:'majority',duration:'quick'});assert.equal(pop(clients[0],'state').stage,'answer');});
 test('Fact Trap private truth not exposed through public request, is revealed only at end',async()=>{const env=new TestEnv(),room=await init(env),clients=[];for(let i=0;i<4;i++){const c=await connect(env,room.code);await c.send(i?{action:'join',code:room.code,name:'P'+i}:{action:'create',name:'Host',createToken:room.createToken});clients.push(c);}await clients[0].send({action:'start',game:'bluff',mode:'fact',duration:'quick',language:'en'});const s=clients[0].room.core.s,guess=s.featured,truth=s.item.answer.en;const players=s.players;const guessClient=clients[players.findIndex(p=>p.id===guess)];for(const c of clients){if(pop(c,'joined').id!==guess)await c.send({action:'submit',round:0,text:`Bluff-${pop(c,'joined').id}`});}
  for(const c of clients){const st=pop(c,'state');assert.equal(st.stage,'vote');assert.equal(st.item.truthIndex,undefined);assert.equal(st.item.source,undefined);assert.ok(!JSON.stringify(st).includes('answerOwners'));}await guessClient.send({action:'submit',round:0,choice:s.truthAt});const reveal=pop(guessClient,'state');assert.equal(reveal.stage,'reveal');assert.ok(JSON.stringify(reveal.item.choices).includes(truth));});
+test('five independent browser seats complete Same Brain scoring with normalization',async()=>{
+  const env=new TestEnv(),room=await init(env),clients=[];
+  for(let i=0;i<5;i++){const c=await connect(env,room.code);await c.send(i?{action:'join',code:room.code,name:'P'+i}:{action:'create',name:'Host',createToken:room.createToken});clients.push(c);}
+  await clients[0].send({action:'start',game:'social',mode:'same',duration:'quick'});
+  for(const [i,c] of clients.entries())await c.send({action:'submit',round:0,text:i===4?'Tacos':i===0?'PIZZA!':'pizza'});
+  const result=pop(clients[0],'state');assert.equal(result.stage,'reveal');
+  for(let i=0;i<5;i++)assert.equal(result.players[i].points,i===4?0:3);
+  assert.equal(clients[0].room.core.s.completed,1);
+});
+test('hibernation reconstruction and 15-second disconnected-host failover recover an active room',async()=>{
+  const env=new TestEnv(),room=await init(env),clients=[];
+  for(let i=0;i<4;i++){const c=await connect(env,room.code);await c.send(i?{action:'join',code:room.code,name:'P'+i}:{action:'create',name:'Host',createToken:room.createToken});clients.push(c);}
+  const originalHost=pop(clients[0],'joined').id;
+  await clients[0].send({action:'start',game:'social',mode:'majority',duration:'quick'});
+  // Simulate Cloudflare hibernation: persistent room storage and socket attachments survive.
+  const ctx=env.rooms.get(room.code).ctx;
+  const restored=new PartyRoom(ctx,env);await restored.ready;
+  assert.equal(restored.core.s.players.length,4);assert.equal(restored.core.s.host,originalHost);
+  assert.equal(restored.core.s.players.every(p=>p.connected),true);
+  clients[0].server.close();await restored.webSocketClose(clients[0].server);
+  assert.equal(restored.core.s.players[0].connected,false);
+  assert.ok(restored.core.s.hostDisconnectedAt);
+  restored.core.s.hostDisconnectedAt=Date.now()-16000;
+  await restored.alarm();
+  assert.equal(restored.core.s.host,pop(clients[1],'joined').id);
+  await restored.webSocketMessage(clients[1].server,JSON.stringify({action:'skip'}));
+  assert.equal(pop(clients[1],'state').stage,'answer');
+  assert.equal(restored.core.s.round,1);
+});
