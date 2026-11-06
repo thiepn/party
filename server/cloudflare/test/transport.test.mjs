@@ -111,3 +111,23 @@ test('restoration starts host failover when host socket vanished before close co
   await recovered.alarm();
   assert.equal(recovered.core.s.host,pop(clients[1],'joined').id);
 });
+
+test('storage write failure must not broadcast an uncommitted host transfer',async()=>{
+  const env=new TestEnv(),reservation=await init(env),clients=[];
+  for(let i=0;i<4;i++){
+    const c=await connect(env,reservation.code);
+    await c.send(i?{action:'join',name:'P'+i}:{action:'create',name:'Host',createToken:reservation.createToken});
+    clients.push(c);
+  }
+  const target=pop(clients[1],'joined').id;
+  const initial=clients[1].cli.messages.length;
+  const store=clients[0].room.ctx.storage;
+  const originalPut=store.put.bind(store);
+  store.put=async()=>{throw new Error('INJECTED_STORAGE_FAILURE');};
+  try{
+    await clients[0].send({action:'transfer',target});
+    assert.equal(clients[1].cli.messages.slice(initial).filter(m=>m.type==='state'&&m.host===target).length,0,
+      'never publish a new host before durable storage confirms it');
+    assert.equal(pop(clients[0],'error').message,'Invalid room operation.');
+  }finally{store.put=originalPut;}
+});
