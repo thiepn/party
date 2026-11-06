@@ -29,3 +29,16 @@ test('Two Truths cannot have duplicate visible statements',()=>{const r=fresh(4,
 test('server ownership, stage, vote integrity and mandatory 4–6 active players',()=>{const r=fresh(4,'social','majority','quick');assert.throws(()=>r.skip('p1'),/host/);assert.throws(()=>r.submit('p1',{choice:2}),RoomError);r.submit('p1',{choice:1});assert.throws(()=>r.submit('p1',{choice:0}),/Already/);assert.equal(r.s.round,0);});
 test('balanced comedy opponents for 4, 5 and 6 players',()=>{for(const n of [4,5,6]){const p=duelSchedule(n,20);assert.equal(p.length,20);assert.ok(p.every(([a,b])=>a!==b&&a>=0&&b<n));}});
 test('normalization handles case, spaces, punctuation and German ß',()=>{assert.equal(normal('  STRASSE!!  '),normal('Straße.'));assert.equal(normal('...'),'');});
+
+test('duration validation rejects inherited object properties without changing room state',()=>{
+  for(const duration of ['toString','constructor','__proto__']){
+    const room=new RoomCore('TESTROOM',content,null,rng);
+    for(let i=0;i<4;i++)room.s.players.push({id:`p${i}`,name:`Player ${i}`,connected:true,token:'secret'});
+    room.s.host='p0';
+    assert.throws(()=>room.start('p0','social','majority',duration,'en'),RoomError);
+    assert.equal(room.s.stage,'lobby');
+    assert.equal(room.s.total,0);
+    assert.equal(room.s.deck.length,0);
+    assert.equal(room.s.item,null);
+  }
+});
