@@ -82,8 +82,14 @@ for(const n of [4,5,6]){
     if(n===4){
       replacement.send({action:'transfer',target:clients[1].joined.id});
       const transferred=await clients[1].next(m=>m.type==='state'&&m.host===clients[1].joined.id&&m.isHost);
-      clients[1].close();
       const disconnectedAt=Date.now();
+      // A graceful browser close must receive a reciprocal close frame, not stall
+      // until the Node WebSocket library forcibly terminates the connection.
+      await new Promise((resolve,reject)=>{
+        const timer=setTimeout(()=>reject(new Error('Graceful WebSocket close handshake timed out')),2000);
+        clients[1].ws.once('close',()=>{clearTimeout(timer);resolve();});
+        clients[1].ws.close(1000,'Leaving');
+      });
       const recovered=await replacement.next(m=>m.type==='state'&&m.host===host.joined.id&&m.isHost&&m.version>transferred.version,26000);
       assert.ok(recovered.version>transferred.version);
       assert.ok(Date.now()-disconnectedAt>=12000,'host transfer must respect failover grace');
