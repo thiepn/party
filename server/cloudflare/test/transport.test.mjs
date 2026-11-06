@@ -131,3 +131,16 @@ test('storage write failure must not broadcast an uncommitted host transfer',asy
     assert.equal(pop(clients[0],'error').message,'Invalid room operation.');
   }finally{store.put=originalPut;}
 });
+
+test('storage write failure must not disclose an unpersisted seat token',async()=>{
+  const env=new TestEnv(),reservation=await init(env);
+  const guest=await connect(env,reservation.code);
+  const store=guest.room.ctx.storage,originalPut=store.put.bind(store);
+  store.put=async()=>{throw new Error('INJECTED_STORAGE_FAILURE');};
+  try{
+    await guest.send({action:'create',name:'Host',createToken:reservation.createToken});
+    assert.equal(guest.cli.messages.filter(m=>m.type==='joined').length,0,
+      'do not return a seat credential before persistence succeeds');
+    assert.equal(pop(guest,'error').message,'Invalid room operation.');
+  }finally{store.put=originalPut;}
+});
