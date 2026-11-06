@@ -22,3 +22,43 @@ jobs:
         run: |
           npm run check
           npm test
+
+  local-workerd-smoke:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    defaults:
+      run:
+        working-directory: server/cloudflare
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned Wrangler and ephemeral WebSocket test dependency
+        run: npm install --no-save --no-package-lock --no-audit --no-fund ws@8.18.3
+      - name: Generate synthetic local R2 fixture and seed isolated local state
+        run: |
+          node --input-type=module -e '
+            import fs from "node:fs";
+            import prompts from "./src/public-prompts.json" with {type:"json"};
+            const fixture=Object.fromEntries(prompts.bluff.fact.map((item,i)=>[
+              item.factId,
+              {answer:{en:"Fixture answer "+i,de:"Testantwort "+i},source:{name:"Offline synthetic test",url:"https://example.invalid/fact"}}
+            ]));
+            fs.writeFileSync(process.env.RUNNER_TEMP+"/party-facts.json",JSON.stringify(fixture));
+          '
+          npx --no-install wrangler r2 object put chaos-club-private-facts/chaos-club/room-facts.json --file "$RUNNER_TEMP/party-facts.json" --local --persist-to "$RUNNER_TEMP/party-state"
+      - name: Run real local workerd and independent 4–6 WebSocket clients
+        run: |
+          export WRANGLER_SEND_METRICS=false
+          npx --no-install wrangler dev --local --ip 127.0.0.1 --port 8787 --persist-to "$RUNNER_TEMP/party-state" > "$RUNNER_TEMP/party-workerd.log" 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          READY=0
+          for attempt in $(seq 1 50); do
+            if curl --fail --silent --max-time 1 http://127.0.0.1:8787/health >/dev/null; then READY=1; break; fi
+            sleep 1
+          done
+          if [ "$READY" != 1 ]; then cat "$RUNNER_TEMP/party-workerd.log"; exit 1; fi
+          if ! node test/live-worker-smoke.mjs; then cat "$RUNNER_TEMP/party-workerd.log"; exit 1; fi
