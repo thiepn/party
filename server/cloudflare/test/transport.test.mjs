@@ -75,3 +75,17 @@ test('room client links one-phone play to the Vercel static root',async()=>{
   assert.match(client,/href="\/" class="chip"/,'the static app is deployed at /, not /offline');
   assert.doesNotMatch(client,/href="\/offline"/);
 });
+
+test('a guest joining before host creation cannot seize the reserved room',async()=>{
+  const env=new TestEnv(),reservation=await init(env);
+  const guest=await connect(env,reservation.code);
+  await guest.send({action:'join',name:'Early guest'});
+  assert.match(pop(guest,'error').message,/host/i);
+  assert.equal(guest.room.core.s.players.length,0);
+  const host=await connect(env,reservation.code);
+  await host.send({action:'create',createToken:reservation.createToken,name:'Host'});
+  assert.equal(pop(host,'joined').code,reservation.code);
+  await guest.send({action:'join',name:'Early guest'});
+  assert.equal(pop(guest,'joined').code,reservation.code);
+  assert.equal(host.room.core.s.players.length,2);
+});
