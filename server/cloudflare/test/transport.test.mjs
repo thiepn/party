@@ -48,3 +48,23 @@ test('hibernation reconstruction and 15-second disconnected-host failover recove
   assert.equal(pop(clients[1],'state').stage,'answer');
   assert.equal(restored.core.s.round,1);
 });
+ // Regression: connected rooms must not incur an alarm every second after the idle TTL.
+test('idle but connected rooms schedule max-age alarm without a one-second loop',async()=>{
+  const env=new TestEnv(),reservation=await init(env),clients=[];
+  for(let i=0;i<4;i++){const c=await connect(env,reservation.code);await c.send(i?{action:'join',name:'P'+i}:{action:'create',name:'Host',createToken:reservation.createToken});clients.push(c);}
+  const room=clients[0].room,now=Date.now();
+  room.createdAt=now-2*60*60*1000-60*1000;
+  room.core.s.modifiedAt=now-2*60*60*1000-30*1000;
+  await room.alarm();
+  assert.ok(room.ctx.storage.alarm>now+60*60*1000,'unexpected frequent alarm for an idle room with connected seats');
+  assert.equal(room.core.s.players.length,4);
+});
+test('offline rooms retain idle-TTL cleanup and disconnected hosts keep 15-second grace',async()=>{
+  const env=new TestEnv(),reservation=await init(env),clients=[];
+  for(let i=0;i<4;i++){const c=await connect(env,reservation.code);await c.send(i?{action:'join',name:'P'+i}:{action:'create',name:'Host',createToken:reservation.createToken});clients.push(c);}
+  const room=clients[0].room,now=Date.now();
+  await room.handleClose(clients[0].server);
+  assert.ok(room.ctx.storage.alarm>=now+14_000&&room.ctx.storage.alarm<=now+16_000,'host handoff needs a 15s alarm');
+  for(const c of clients.slice(1))await room.handleClose(c.server);
+  assert.ok(room.ctx.storage.alarm>=Date.now()+2*60*60*1000-1500,'all-offline room must retain 2h idle cleanup');
+});
