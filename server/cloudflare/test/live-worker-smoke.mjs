@@ -81,9 +81,12 @@ for(const n of [4,5,6]){
     assert.ok(reveal.item.source?.url?.startsWith('https://'),'source available after reveal');
     if(n===4){
       replacement.send({action:'transfer',target:clients[1].joined.id});
-      await clients[1].next(m=>m.type==='state'&&m.host===clients[1].joined.id&&m.isHost);
+      const transferred=await clients[1].next(m=>m.type==='state'&&m.host===clients[1].joined.id&&m.isHost);
       clients[1].close();
-      await replacement.next(m=>m.type==='state'&&m.host===host.joined.id&&m.isHost,26000);
+      const disconnectedAt=Date.now();
+      const recovered=await replacement.next(m=>m.type==='state'&&m.host===host.joined.id&&m.isHost&&m.version>transferred.version,26000);
+      assert.ok(recovered.version>transferred.version);
+      assert.ok(Date.now()-disconnectedAt>=12000,'host transfer must respect failover grace');
       // The first still-connected seat should become host after the 15-second grace period.
     }
     results.push({seats:n,majority:'PASS',malformed_durations:'PASS',reconnect_rotation:'PASS',private_fact_projection:'PASS',host_failover:n===4?'attempted':'not tested'});
