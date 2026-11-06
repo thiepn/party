@@ -83,10 +83,7 @@ for(const n of [4,5,6]){
       replacement.send({action:'transfer',target:clients[1].joined.id});
       await clients[1].next(m=>m.type==='state'&&m.host===clients[1].joined.id&&m.isHost);
       clients[1].close();
-      await replacement.next(m=>m.type==='state'&&m.host===replacement.joined?.id,26000).catch(async()=>{
-        // Replacement is the original seat after token rotation; identify host by user ID.
-        return replacement.next(m=>m.type==='state'&&m.host===host.joined.id,26000);
-      });
+      await replacement.next(m=>m.type==='state'&&m.host===host.joined.id&&m.isHost,26000);
       // The first still-connected seat should become host after the 15-second grace period.
     }
     results.push({seats:n,majority:'PASS',malformed_durations:'PASS',reconnect_rotation:'PASS',private_fact_projection:'PASS',host_failover:n===4?'attempted':'not tested'});
