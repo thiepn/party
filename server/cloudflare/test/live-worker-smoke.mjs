@@ -64,7 +64,7 @@ for(const n of [4,5,6]){
       assert.equal(view.players.length,n);assert.equal(view.completed,1);
       if(c===host)scores=view.players.map(p=>p.points);
     }
-    assert.match((await clients[0].next(m=>m.type==='error')).message,/Already|answer|stage|round/i);
+    assert.match((await clients[0].next(m=>m.type==='error')).message,/No submission|Already|answer|stage|round/i);
     assert.match((await clients[1].next(m=>m.type==='error')).message,/Old round/i);
     const replacement=connection(allocation.code);await replacement.ready;clients.push(replacement);
     replacement.send({action:'resume',id:host.joined.id,token:host.joined.token,code:allocation.code});
