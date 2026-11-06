@@ -25,7 +25,12 @@ export default {async fetch(req,env){const url=new URL(req.url);if(url.pathname=
 }};
 export class PartyRoom {
   constructor(ctx,env){this.ctx=ctx;this.env=env;this.core=null;this.createToken=null;this.createdAt=0;this.facts=null;
-    this.ready=ctx.blockConcurrencyWhile(async()=>{const raw=await ctx.storage.get('room'),init=await ctx.storage.get('init');if(raw){this.core=new RoomCore(raw.code,{},raw);this.createdAt=raw.createdAt||Date.now();this.createToken=raw.createToken||null;this.restoreConnections();}else if(init){this.createToken=init.token;this.createdAt=init.createdAt;this.pendingCode=init.code;}});
+    this.ready=ctx.blockConcurrencyWhile(async()=>{const raw=await ctx.storage.get('room'),init=await ctx.storage.get('init');if(raw){this.core=new RoomCore(raw.code,{},raw);this.createdAt=raw.createdAt||Date.now();this.createToken=raw.createToken||null;this.restoreConnections();
+      // After a crash/hibernation a host socket can be gone without its close
+      // handler having persisted the failover timestamp. Restore the deadline.
+      const host=this.core.player(this.core.s.host);
+      if(host&&!host.connected&&!this.core.s.hostDisconnectedAt){this.core.s.hostDisconnectedAt=Date.now();await this.save();}
+    }else if(init){this.createToken=init.token;this.createdAt=init.createdAt;this.pendingCode=init.code;}});
   }
   restoreConnections(){if(!this.core)return;const s=this.core.s;for(const p of s.players)p.connected=false;
     for(const ws of this.ctx.getWebSockets()){const a=ws.deserializeAttachment();if(!a?.pid||!a?.nonce)continue;const p=this.core.player(a.pid);if(p&&p.nonce===a.nonce)p.connected=true;}
