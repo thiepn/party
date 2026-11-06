@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "chaos-club-rooms",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-11-06",
+  "workers_dev": false,
+  "durable_objects": {"bindings": [{"name": "ROOMS", "class_name": "PartyRoom"}]},
+  "migrations": [{"tag": "v1", "new_sqlite_classes": ["PartyRoom"]}],
+  "r2_buckets": [{"binding":"FACTS", "bucket_name":"chaos-club-private-facts"}],
+  "vars": {"ALLOW_LOCAL_DEV": "false"}
+}

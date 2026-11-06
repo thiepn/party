@@ -1,0 +1,1 @@
+{"name":"chaos-club-rooms","private":true,"version":"4.0.1-hosted-draft","type":"module","scripts":{"test":"node --test test/*.test.mjs","check":"node --check src/worker.mjs && node --check src/room-core.mjs"},"devDependencies":{"wrangler":"4.45.0"}}
