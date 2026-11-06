@@ -1,0 +1,24 @@
+name: Draft multiplayer Node regressions
+
+on:
+  push:
+    branches:
+      - feat/secure-online-rooms-draft
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify Worker syntax and deterministic room tests
+        working-directory: server/cloudflare
+        run: |
+          npm run check
+          npm test
