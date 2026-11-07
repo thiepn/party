@@ -100,3 +100,41 @@ jobs:
           ln -s "$RUNNER_TEMP/party-eviction-tools/node_modules" "$GITHUB_WORKSPACE/server/cloudflare/node_modules"
       - name: Explicitly evict DO while live WebSockets survive
         run: npx --no-install vitest run --config vitest.hibernation.config.mjs
+
+  local-chromium-admission:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    defaults:
+      run:
+        working-directory: server/cloudflare
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned Wrangler and Chromium automation API only
+        run: npm install --no-save --no-package-lock --no-audit --no-fund playwright-core@^1.58.0
+      - name: Test real browser subprotocol join and reconnect on local loopback
+        run: |
+          set -euo pipefail
+          command -v google-chrome || command -v google-chrome-stable
+          python3 -m http.server 8080 --bind 127.0.0.1 --directory "$GITHUB_WORKSPACE/public" > "$RUNNER_TEMP/party-static.log" 2>&1 &
+          STATIC_PID=$!
+          setsid npx --no-install wrangler dev --local --ip 127.0.0.1 --port 8787 --var ALLOW_LOCAL_DEV:true --persist-to "$RUNNER_TEMP/party-browser-state" > "$RUNNER_TEMP/party-browser-workerd.log" 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill -TERM -- "-$SERVER_PID" 2>/dev/null || kill "$SERVER_PID" 2>/dev/null || true
+            kill "$STATIC_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          READY=0
+          for i in $(seq 1 50); do
+            if curl --fail --silent --max-time 1 http://127.0.0.1:8787/health >/dev/null &&
+               curl --fail --silent --max-time 1 http://127.0.0.1:8080/room/ >/dev/null; then READY=1; break; fi
+            sleep 1
+          done
+          if [ "$READY" != 1 ]; then cat "$RUNNER_TEMP/party-browser-workerd.log"; cat "$RUNNER_TEMP/party-static.log"; exit 1; fi
+          STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Origin: http://127.0.0.1:8080' -H 'content-type: application/json' -d '{}' http://127.0.0.1:8787/rooms)
+          if [ "$STATUS" != 201 ]; then echo "Local development origin unavailable ($STATUS)"; cat "$RUNNER_TEMP/party-browser-workerd.log"; exit 1; fi
+          if ! node test/browser-admission-smoke.mjs; then cat "$RUNNER_TEMP/party-browser-workerd.log"; exit 1; fi
