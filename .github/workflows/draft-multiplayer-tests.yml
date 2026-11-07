@@ -72,6 +72,7 @@ jobs:
           trap stop_workerd EXIT
           start_workerd
           if ! node test/live-worker-smoke.mjs; then cat "$RUNNER_TEMP/party-workerd.log"; exit 1; fi
+          if ! node test/admission-worker-smoke.mjs; then cat "$RUNNER_TEMP/party-workerd.log"; exit 1; fi
           node test/persistence-worker-smoke.mjs record
           stop_workerd
           sleep 1
