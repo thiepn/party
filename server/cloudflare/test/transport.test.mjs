@@ -147,3 +147,56 @@ test('storage write failure must not disclose an unpersisted seat token',async()
     assert.equal(guest.room.createToken,reservation.createToken,'failed create must restore reservation credential');
   }finally{store.put=originalPut;}
 });
+
+test('unverified socket budget, forged proofs and idle expiry preserve authenticated host capacity',async()=>{
+  const env=new TestEnv(),reservation=await init(env),pending=[];
+  const wsUrl='https://rooms.party.thiepn.dev/ws?code='+reservation.code;
+  for(let i=0;i<5;i++)pending.push(await connect(env,reservation.code));
+  const denied=await worker.fetch(request(wsUrl,{headers:{Upgrade:'websocket'}}),env);
+  assert.equal(denied.status,429,'sixth unverified socket must not be accepted');
+  for(const proof of ['cc-create.'+'f'.repeat(64),'cc-resume.00000000-0000-0000-0000-000000000000.'+'f'.repeat(64)]){
+    const rejected=await worker.fetch(request(wsUrl,{headers:{Upgrade:'websocket','Sec-WebSocket-Protocol':'chaos-room.v1, '+proof}}),env);
+    assert.equal(rejected.status,403,'forged credential must not receive reserved capacity');
+  }
+  const hostResponse=await worker.fetch(request(wsUrl,{headers:{Upgrade:'websocket','Sec-WebSocket-Protocol':'chaos-room.v1, cc-create.'+reservation.createToken}}),env);
+  assert.equal(hostResponse.status,101,'valid host must bypass five idle unverified sockets');
+  assert.equal(hostResponse.headers.get('Sec-WebSocket-Protocol'),'chaos-room.v1');
+  const room=env.rooms.get(reservation.code).room,server=hostResponse.webSocket.peer;
+  await room.webSocketMessage(server,JSON.stringify({action:'create',name:'Host',createToken:reservation.createToken}));
+  assert.equal(hostResponse.webSocket.messages.at(-2)?.type,'joined');
+  const id=hostResponse.webSocket.messages.find(m=>m.type==='joined').id;
+  const token=hostResponse.webSocket.messages.find(m=>m.type==='joined').token;
+  const validResume=await worker.fetch(request(wsUrl,{headers:{Upgrade:'websocket','Sec-WebSocket-Protocol':'chaos-room.v1, cc-resume.'+id+'.'+token}}),env);
+  assert.equal(validResume.status,101,'existing seat must be able to reconnect despite pending flood');
+  for(const c of pending){
+    const old=c.server.deserializeAttachment();
+    c.server.serializeAttachment({...old,openedAt:Date.now()-11000});
+  }
+  await room.alarm();
+  assert.ok(pending.every(c=>c.server.closed),'idle unauthenticated WebSockets must be closed by alarm');
+  assert.equal(server.closed,false,'host must not be closed by pending-connection cleanup');
+  const next=await worker.fetch(request(wsUrl,{headers:{Upgrade:'websocket'}}),env);
+  assert.equal(next.status,101,'expired pending sockets must release room capacity');
+});
+
+test('slower private R2 loading allows a join without partially starting the room',async()=>{
+  const env=new TestEnv(),reservation=await init(env),clients=[];
+  for(let i=0;i<4;i++){
+    const c=await connect(env,reservation.code);
+    await c.send(i?{action:'join',name:'P'+i}:{action:'create',name:'Host',createToken:reservation.createToken});
+    clients.push(c);
+  }
+  let unblock,started;
+  const requested=new Promise(resolve=>{started=resolve;});
+  env.FACTS.get=async()=>{started();return await new Promise(resolve=>{unblock=()=>resolve({json:async()=>privateData});});};
+  const starting=clients[0].send({action:'start',game:'social',mode:'majority',duration:'quick'});
+  await requested;
+  const guest=await connect(env,reservation.code);
+  await guest.send({action:'join',name:'P4'});
+  assert.equal(clients[0].room.core.s.stage,'lobby');
+  assert.equal(clients[0].room.core.s.players.length,5);
+  unblock();await starting;
+  assert.equal(clients[0].room.core.s.stage,'answer');
+  assert.equal(clients[0].room.core.s.players.length,5);
+  assert.equal(pop(guest,'state').players.length,5);
+});
