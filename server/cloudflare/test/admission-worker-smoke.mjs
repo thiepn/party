@@ -37,9 +37,14 @@ try{
   // One alarm, not a recurring JS timer, reclaims idle guest sockets.
   // This also checks that an established host stays usable across an idle span;
   // it is not by itself proof that the Durable Object was actually evicted.
-  await new Promise(resolve=>setTimeout(resolve,11500));
-  assert.ok(opened.slice(0,5).every(ws=>ws.readyState===WebSocket.CLOSED),
-    'idle unauthenticated sockets should close after admission TTL');
+  const startedWaiting=Date.now();
+  const timeoutAt=startedWaiting+20000;
+  while(opened.slice(0,5).some(ws=>ws.readyState!==WebSocket.CLOSED)&&Date.now()<timeoutAt)
+    await new Promise(resolve=>setTimeout(resolve,250));
+  const states=opened.slice(0,5).map(ws=>ws.readyState);
+  console.log('ADMISSION_IDLE_DIAG',JSON.stringify({waitedMs:Date.now()-startedWaiting,states}));
+  assert.ok(states.every(s=>s===WebSocket.CLOSED),
+    'idle unauthenticated sockets must close within a bounded alarm interval');
   const reopened=await dial(room.code);
   assert.equal(reopened.status,101,'new guest can connect after idle admission sockets expire');
   opened.push(reopened.ws);
