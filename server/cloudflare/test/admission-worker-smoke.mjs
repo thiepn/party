@@ -23,6 +23,8 @@ try{
     else assert.equal(result.status,429,'pending room connections must be bounded');
   }
   assert.ok(opened.length<=5,'unverified connections must have an independent limit of five');
+  const forged=await dial(room.code,['chaos-room.v1','cc-create.'+'f'.repeat(64)]);
+  assert.equal(forged.status,403,'forged host proof must not bypass pending limit');
   const trusted=await dial(room.code,['chaos-room.v1','cc-create.'+room.createToken]);
   assert.equal(trusted.status,101,'holder of the secret createToken must still connect during an unauthenticated flood');
   opened.push(trusted.ws);
@@ -57,6 +59,22 @@ try{
   });
   trusted.ws.send(JSON.stringify({action:'start',game:'social',mode:'majority',duration:'quick'}));
   assert.match((await stillActive).message,/Start requires 4/i);
+  const resumed=await dial(room.code,['chaos-room.v1','cc-resume.'+seat.id+'.'+seat.token]);
+  assert.equal(resumed.status,101,'valid saved seat must receive reserved reconnect capacity');
+  opened.push(resumed.ws);
+  const rotation=new Promise((resolve,reject)=>{
+    const timer=setTimeout(()=>reject(new Error('Reserved reconnect did not return rotated credentials')),5000);
+    resumed.ws.on('message',raw=>{
+      const msg=JSON.parse(String(raw));
+      if(msg.type==='joined'){clearTimeout(timer);resolve(msg);}
+      else if(msg.type==='error'){clearTimeout(timer);reject(new Error(msg.message));}
+    });
+  });
+  resumed.ws.send(JSON.stringify({action:'resume',code:room.code,id:seat.id,token:seat.token}));
+  const renewed=await rotation;
+  assert.equal(renewed.id,seat.id);
+  assert.notEqual(renewed.token,seat.token);
+  console.log('ADMISSION_RESUME_PASS',JSON.stringify({seatPreserved:true,credentialRotated:true}));
   console.log('ADMISSION_IDLE_RECOVERY_PASS',JSON.stringify({pendingCloseInitiated:5,newGuestAccepted:true,hostResponsive:true}));
   console.log('ADMISSION_FLOOD_PASS',JSON.stringify({unverifiedAccepted:admittedGuestCount,unverifiedRefused:16-admittedGuestCount,hostRecovered:true}));
 }finally{for(const ws of opened)try{ws.terminate();}catch{}}
