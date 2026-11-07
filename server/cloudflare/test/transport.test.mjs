@@ -248,3 +248,35 @@ test('private R2 outage fails closed without changing game or score and allows r
   assert.equal(view.players.length,4);
   assert.equal(view.item.source,undefined,'private source must remain hidden before reveal');
 });
+
+test('closing idle guest sockets must not exhaust admission across repeated waves',async()=>{
+  const env=new TestEnv(),reservation=await init(env);
+  const host=await connect(env,reservation.code);
+  await host.send({action:'create',name:'Host',createToken:reservation.createToken});
+  const room=host.room,hostSeat=pop(host,'joined');
+  let staleCount=0;
+  for(let wave=0;wave<4;wave++){
+    const group=[];
+    for(let i=0;i<5;i++){
+      const response=await worker.fetch(request('https://rooms.party.thiepn.dev/ws?code='+reservation.code,{headers:{Upgrade:'websocket'}}),env);
+      assert.equal(response.status,101,'wave '+wave+' guest '+i+' must not be blocked by closing prior waves');
+      group.push(response.webSocket.peer);
+    }
+    for(const ws of group){
+      const a=ws.deserializeAttachment();
+      ws.serializeAttachment({...a,openedAt:Date.now()-11_000});
+      // Simulate Cloudflare retaining a CLOSING socket in getWebSockets:
+      // a close frame was sent but the peer's reply never arrived.
+      ws.readyState=2;
+      ws.close=()=>{ws.readyState=2;};
+    }
+    await room.alarm();
+    staleCount+=group.length;
+  }
+  assert.equal(staleCount,20);
+  const resumed=await worker.fetch(request('https://rooms.party.thiepn.dev/ws?code='+reservation.code,{
+    headers:{Upgrade:'websocket','Sec-WebSocket-Protocol':'chaos-room.v1, cc-resume.'+hostSeat.id+'.'+hostSeat.token}
+  }),env);
+  assert.equal(resumed.status,101,'known host must recover even after four closing guest waves');
+  assert.equal(room.core.s.players.length,1);
+});
