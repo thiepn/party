@@ -115,7 +115,19 @@ jobs:
           node-version: '22'
       - name: Install pinned Wrangler and Chromium automation API only
         run: npm install --no-save --no-package-lock --no-audit --no-fund playwright-core@^1.58.0
-      - name: Test real browser subprotocol join and reconnect on local loopback
+      - name: Seed private synthetic facts in isolated local browser storage
+        run: |
+          node --input-type=module -e '
+            import fs from "node:fs";
+            import prompts from "./src/public-prompts.json" with {type:"json"};
+            const fixture=Object.fromEntries(prompts.bluff.fact.map((item,i)=>[
+              item.factId,
+              {answer:{en:"Synthetic answer "+i,de:"Testantwort "+i},source:{name:"Offline browser fixture",url:"https://example.invalid/test"}}
+            ]));
+            fs.writeFileSync(process.env.RUNNER_TEMP+"/party-browser-facts.json",JSON.stringify(fixture));
+          '
+          npx --no-install wrangler r2 object put chaos-club-private-facts/chaos-club/room-facts.json --file "$RUNNER_TEMP/party-browser-facts.json" --local --persist-to "$RUNNER_TEMP/party-browser-state"
+      - name: Test four independent Chromium browsers, parallel scoring and reconnect
         run: |
           set -euo pipefail
           command -v google-chrome || command -v google-chrome-stable
