@@ -200,3 +200,25 @@ test('slower private R2 loading allows a join without partially starting the roo
   assert.equal(clients[0].room.core.s.players.length,5);
   assert.equal(pop(guest,'state').players.length,5);
 });
+
+test('alarm scheduling failure must not durably orphan a join without credentials',async()=>{
+  const env=new TestEnv(),reservation=await init(env),host=await connect(env,reservation.code);
+  await host.send({action:'create',name:'Host',createToken:reservation.createToken});
+  const first=pop(host,'joined');
+  const guest=await connect(env,reservation.code);
+  const store=guest.room.ctx.storage,previous=await store.get('room');
+  const original=store.setAlarm.bind(store);
+  store.setAlarm=async()=>{throw new Error('INJECTED_ALARM_FAILURE');};
+  try{
+    await guest.send({action:'join',name:'Guest'});
+    assert.equal(guest.cli.messages.filter(m=>m.type==='joined').length,0,'failed scheduling must not issue credentials');
+    assert.equal(pop(guest,'error').message,'Invalid room operation.');
+    assert.equal(guest.room.core.s.players.length,1,'failed join must roll back in memory');
+    assert.deepEqual((await store.get('room')).players.map(p=>p.id),previous.players.map(p=>p.id),
+      'failed join must not consume a durable seat without returning its token');
+    assert.equal(guest.room.core.s.host,first.id,'host must remain unchanged');
+  }finally{store.setAlarm=original;}
+  await guest.send({action:'join',name:'Guest'});
+  assert.equal(pop(guest,'joined').code,reservation.code,'guest can retry after temporary alarm failure');
+  assert.equal(guest.room.core.s.players.length,2);
+});
