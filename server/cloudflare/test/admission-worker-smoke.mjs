@@ -74,6 +74,42 @@ try{
   const renewed=await rotation;
   assert.equal(renewed.id,seat.id);
   assert.notEqual(renewed.token,seat.token);
+  // Reproduce multiple successive admission waves while earlier close
+  // handshakes linger in the CLOSING state in local workerd.
+  // The prior reopened guest occupies one of the five unverified slots.
+  const secondWave=[];
+  for(let i=0;i<4;i++){
+    const next=await dial(room.code);
+    assert.equal(next.status,101,'second-wave guest '+i+' must be admitted while older sockets are closing');
+    secondWave.push(next.ws);opened.push(next.ws);
+  }
+  const secondPending=[reopened.ws,...secondWave],deadline=Date.now()+16_000;
+  while(secondPending.some(ws=>ws.readyState===WebSocket.OPEN)&&Date.now()<deadline)
+    await new Promise(resolve=>setTimeout(resolve,250));
+  assert.ok(secondPending.every(ws=>ws.readyState!==WebSocket.OPEN),
+    'second-wave pending handshakes must begin closing after idle expiry');
+  const thirdWave=[];
+  for(let i=0;i<5;i++){
+    const next=await dial(room.code);
+    assert.equal(next.status,101,'third-wave guest '+i+' must not be blocked by CLOSING socket accumulation');
+    thirdWave.push(next.ws);opened.push(next.ws);
+  }
+  assert.equal((await dial(room.code)).status,429,'an actual sixth OPEN unverified guest must still be refused');
+  const repeatHost=await dial(room.code,['chaos-room.v1','cc-resume.'+renewed.id+'.'+renewed.token]);
+  assert.equal(repeatHost.status,101,'authenticated host must survive three waves and stale close handshakes');
+  opened.push(repeatHost.ws);
+  const rejoined=new Promise((resolve,reject)=>{
+    const timer=setTimeout(()=>reject(new Error('Host lost reserved reconnect after repeated waves')),5000);
+    repeatHost.ws.on('message',raw=>{
+      const m=JSON.parse(String(raw));
+      if(m.type==='joined'){clearTimeout(timer);resolve(m);}
+      else if(m.type==='error'){clearTimeout(timer);reject(new Error(m.message));}
+    });
+  });
+  repeatHost.ws.send(JSON.stringify({action:'resume',code:room.code,id:renewed.id,token:renewed.token}));
+  const recovered=await rejoined;
+  assert.notEqual(recovered.token,renewed.token);
+  console.log('ADMISSION_MULTI_WAVE_PASS',JSON.stringify({waves:3,thirdWaveAccepted:5,sixthGuestRefused:true,hostRecovered:true}));
   console.log('ADMISSION_RESUME_PASS',JSON.stringify({seatPreserved:true,credentialRotated:true}));
   console.log('ADMISSION_IDLE_RECOVERY_PASS',JSON.stringify({pendingCloseInitiated:5,newGuestAccepted:true,hostResponsive:true}));
   console.log('ADMISSION_FLOOD_PASS',JSON.stringify({unverifiedAccepted:admittedGuestCount,unverifiedRefused:16-admittedGuestCount,hostRecovered:true}));
