@@ -70,7 +70,7 @@ export class PartyRoom {
           const token=claimed.slice('cc-create.'.length);
           priority=!!(this.createToken&&token===this.createToken&&!this.core.s.host);
         }else{
-          const parsed=/^cc-resume\\.([0-9a-f-]{36})\\.([0-9a-f]{64})$/.exec(claimed);
+          const parsed=/^cc-resume\.([0-9a-f-]{36})\.([0-9a-f]{64})$/.exec(claimed);
           priority=!!(parsed&&this.core.player(parsed[1])?.token===parsed[2]);
         }
         if(!priority)return new Response('Invalid admission proof',{status:403});
