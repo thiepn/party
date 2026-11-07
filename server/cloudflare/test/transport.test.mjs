@@ -4,7 +4,7 @@ const privateData=Object.fromEntries(prompts.bluff.fact.map((f,i)=>[f.factId,{an
 class TestSocket {constructor(){this.messages=[];this.attachment={};this.closed=false;}serializeAttachment(a){this.attachment=a;}deserializeAttachment(){return this.attachment;}send(text){this.peer.messages.push(JSON.parse(text));}close(){this.closed=true;}}
 globalThis.WebSocketPair=class {constructor(){const client=new TestSocket(),server=new TestSocket();client.peer=server;server.peer=client;return {0:client,1:server};}};
 const NativeResponse=globalThis.Response;
-globalThis.Response=class extends NativeResponse {constructor(body,opts={}){if(opts.status===101){super(null,{status:200});Object.defineProperty(this,'status',{value:101});this.webSocket=opts.webSocket;}else super(body,opts);}};
+globalThis.Response=class extends NativeResponse {constructor(body,opts={}){if(opts.status===101){super(null,{status:200,headers:opts.headers});Object.defineProperty(this,'status',{value:101});this.webSocket=opts.webSocket;}else super(body,opts);}};
 const {default:worker,PartyRoom}=await import('../src/worker.mjs');
 class FakeStore {constructor(){this.kv=new Map();this.alarm=null;}async get(k){return structuredClone(this.kv.get(k));}async put(k,v){this.kv.set(k,structuredClone(v));}async delete(k){this.kv.delete(k);}async setAlarm(t){this.alarm=t;}async deleteAll(){this.kv.clear();}}
 class FakeCtx {constructor(code){this.id={toString:()=>code};this.storage=new FakeStore();this.sockets=[];}blockConcurrencyWhile(fn){return fn();}acceptWebSocket(ws){this.sockets.push(ws);}getWebSockets(){return this.sockets.filter(x=>!x.closed);}}
