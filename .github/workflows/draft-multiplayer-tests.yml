@@ -95,8 +95,8 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/party-eviction-tools"
           cd "$RUNNER_TEMP/party-eviction-tools"
-          npm init -y >/dev/null
-          npm install --no-audit --no-fund vitest@^4.1.0 @cloudflare/vitest-plugin wrangler@4.158.0
+          printf '{"name":"party-eviction-test-tools","version":"1.0.0","private":true}' > package.json
+          yarn add --non-interactive --ignore-engines 'vitest@^4.1.0' '@cloudflare/vitest-plugin' 'wrangler@4.158.0'
           ln -s "$RUNNER_TEMP/party-eviction-tools/node_modules" "$GITHUB_WORKSPACE/server/cloudflare/node_modules"
       - name: Explicitly evict DO while live WebSockets survive
         run: npx --no-install vitest run --config vitest.hibernation.config.mjs
