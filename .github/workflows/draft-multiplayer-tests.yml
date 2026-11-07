@@ -78,3 +78,20 @@ jobs:
           sleep 1
           start_workerd
           if ! node test/persistence-worker-smoke.mjs verify; then cat "$RUNNER_TEMP/party-workerd.log"; exit 1; fi
+
+  hibernation-eviction:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    defaults:
+      run:
+        working-directory: server/cloudflare
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install ephemeral official Workers Vitest integration
+        run: npm install --no-save --no-package-lock --no-audit --no-fund vitest@^4.1.0 @cloudflare/vitest-plugin
+      - name: Explicitly evict DO while live WebSockets survive
+        run: npx --no-install vitest run --config vitest.hibernation.config.mjs
