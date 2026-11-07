@@ -91,7 +91,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install ephemeral official Workers Vitest integration
-        run: npm install --no-save --no-package-lock --no-audit --no-fund vitest@^4.1.0 @cloudflare/vitest-plugin
+      - name: Install isolated official Workers Vitest integration
+        run: |
+          mkdir -p "$RUNNER_TEMP/party-eviction-tools"
+          cd "$RUNNER_TEMP/party-eviction-tools"
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund vitest@^4.1.0 @cloudflare/vitest-plugin wrangler@4.158.0
+          ln -s "$RUNNER_TEMP/party-eviction-tools/node_modules" "$GITHUB_WORKSPACE/server/cloudflare/node_modules"
       - name: Explicitly evict DO while live WebSockets survive
         run: npx --no-install vitest run --config vitest.hibernation.config.mjs
