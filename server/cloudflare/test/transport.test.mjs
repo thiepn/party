@@ -222,3 +222,29 @@ test('alarm scheduling failure must not durably orphan a join without credential
   assert.equal(pop(guest,'joined').code,reservation.code,'guest can retry after temporary alarm failure');
   assert.equal(guest.room.core.s.players.length,2);
 });
+
+test('private R2 outage fails closed without changing game or score and allows recovery',async()=>{
+  const env=new TestEnv(),reservation=await init(env),clients=[];
+  for(let i=0;i<4;i++){
+    const c=await connect(env,reservation.code);
+    await c.send(i?{action:'join',name:'P'+i}:{action:'create',name:'Host',createToken:reservation.createToken});
+    clients.push(c);
+  }
+  const room=clients[0].room,before=await room.ctx.storage.get('room');
+  const originalGet=env.FACTS.get.bind(env.FACTS);
+  env.FACTS.get=async()=>{throw new Error('SYNTHETIC_PRIVATE_R2_UNAVAILABLE');};
+  try{
+    await clients[0].send({action:'start',game:'bluff',mode:'fact',duration:'quick',language:'en'});
+    assert.equal(pop(clients[0],'error').message,'Invalid room operation.');
+    assert.equal(room.core.s.stage,'lobby','failed private data load must leave lobby unchanged');
+    assert.equal(room.core.s.completed,0);
+    const after=await room.ctx.storage.get('room');
+    assert.deepEqual(after.players.map(p=>p.points),before.players.map(p=>p.points),'no score mutation on R2 failure');
+    assert.equal(after.stage,'lobby','no partially persisted game start');
+  }finally{env.FACTS.get=originalGet;}
+  await clients[0].send({action:'start',game:'bluff',mode:'fact',duration:'quick',language:'en'});
+  const view=pop(clients[0],'state');
+  assert.equal(view.stage,'prepare');
+  assert.equal(view.players.length,4);
+  assert.equal(view.item.source,undefined,'private source must remain hidden before reveal');
+});
