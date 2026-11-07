@@ -1,0 +1,16 @@
+# Never publish real Fact Trap answers or private review notes
+private/
+source/room/content.json
+source/room/fact-provenance.json
+source/room/fact-review-hold.json
+.env*
+!.env.example
+*.pem
+*.key
+node_modules/
+.wrangler/
+__pycache__/
+*.pyc
+playwright-report/
+test-results/
+.DS_Store

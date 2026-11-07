@@ -1,0 +1,3513 @@
+{
+  "social": {
+    "majority": [
+      {
+        "type": "majority",
+        "q": {
+          "en": "What sounds worse at a party?",
+          "de": "Was ist auf einer Party schlimmer?"
+        },
+        "options": [
+          {
+            "en": "No music for an hour",
+            "de": "Eine Stunde keine Musik"
+          },
+          {
+            "en": "No snacks all night",
+            "de": "Den ganzen Abend keine Snacks"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which awkward situation would you prefer?",
+          "de": "Welche peinliche Situation wäre dir lieber?"
+        },
+        "options": [
+          {
+            "en": "Forget someone’s name during introductions",
+            "de": "Beim Vorstellen einen Namen vergessen"
+          },
+          {
+            "en": "Wave at someone who is waving at somebody else",
+            "de": "Jemandem winken, der jemand anderem zuwinkt"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which thing would you rather lose for a week?",
+          "de": "Worauf würdest du lieber eine Woche verzichten?"
+        },
+        "options": [
+          {
+            "en": "All streaming services",
+            "de": "Alle Streamingdienste"
+          },
+          {
+            "en": "All food delivery",
+            "de": "Jeden Lieferdienst"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which is the worse houseguest habit?",
+          "de": "Welche Gäste-Angewohnheit ist schlimmer?"
+        },
+        "options": [
+          {
+            "en": "Arriving an hour early",
+            "de": "Eine Stunde zu früh kommen"
+          },
+          {
+            "en": "Arriving an hour late",
+            "de": "Eine Stunde zu spät kommen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What sounds more exhausting?",
+          "de": "Was klingt anstrengender?"
+        },
+        "options": [
+          {
+            "en": "Organize a trip with ten friends",
+            "de": "Reise mit zehn Freunden planen"
+          },
+          {
+            "en": "Choose a movie for ten friends",
+            "de": "Film für zehn Freunde auswählen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which is the worse first-date disaster?",
+          "de": "Welches erste Date wäre schlimmer?"
+        },
+        "options": [
+          {
+            "en": "Accidentally call them by the wrong name",
+            "de": "Aus Versehen den falschen Namen sagen"
+          },
+          {
+            "en": "Realize halfway you are at the wrong restaurant",
+            "de": "Mitten im Date merken, dass du im falschen Restaurant sitzt"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which unexpected talent would you choose?",
+          "de": "Welches seltsame Talent hättest du lieber?"
+        },
+        "options": [
+          {
+            "en": "Never forget a name",
+            "de": "Nie wieder Namen vergessen"
+          },
+          {
+            "en": "Always find a parking spot",
+            "de": "Immer einen Parkplatz finden"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What would you rather control?",
+          "de": "Was würdest du lieber kontrollieren?"
+        },
+        "options": [
+          {
+            "en": "The party playlist",
+            "de": "Die Party-Playlist"
+          },
+          {
+            "en": "All the food orders",
+            "de": "Alle Essensbestellungen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What sounds worse at work?",
+          "de": "Was ist bei der Arbeit schlimmer?"
+        },
+        "options": [
+          {
+            "en": "Five short meetings every day",
+            "de": "Jeden Tag fünf kurze Meetings"
+          },
+          {
+            "en": "One four-hour meeting each week",
+            "de": "Jede Woche ein vierstündiges Meeting"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which surprise would you like more?",
+          "de": "Welche Überraschung wäre dir lieber?"
+        },
+        "options": [
+          {
+            "en": "A spontaneous weekend trip",
+            "de": "Ein spontaner Wochenendtrip"
+          },
+          {
+            "en": "A surprise dinner with friends",
+            "de": "Ein Überraschungsessen mit Freunden"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which would you tolerate longer?",
+          "de": "Was würdest du länger aushalten?"
+        },
+        "options": [
+          {
+            "en": "A very bad song on repeat",
+            "de": "Ein sehr schlechtes Lied in Dauerschleife"
+          },
+          {
+            "en": "A very slow internet connection",
+            "de": "Eine extrem langsame Internetverbindung"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which phone problem is worse?",
+          "de": "Welches Handyproblem ist schlimmer?"
+        },
+        "options": [
+          {
+            "en": "Battery stuck at 15%",
+            "de": "Akku dauerhaft bei 15 %"
+          },
+          {
+            "en": "Every message arrives ten minutes late",
+            "de": "Jede Nachricht kommt zehn Minuten verspätet"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which friend-group job would you prefer?",
+          "de": "Welche Gruppenaufgabe wäre dir lieber?"
+        },
+        "options": [
+          {
+            "en": "Book the accommodation",
+            "de": "Die Unterkunft buchen"
+          },
+          {
+            "en": "Organize all transportation",
+            "de": "Den gesamten Transport planen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which would you rather always do?",
+          "de": "Was würdest du lieber immer tun?"
+        },
+        "options": [
+          {
+            "en": "Speak first in group discussions",
+            "de": "In Diskussionen zuerst reden"
+          },
+          {
+            "en": "Give the final summary of every discussion",
+            "de": "Jede Diskussion am Ende zusammenfassen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which embarrassment would you rather face?",
+          "de": "Welche Peinlichkeit wäre dir lieber?"
+        },
+        "options": [
+          {
+            "en": "An old haircut photo appears on a billboard",
+            "de": "Ein altes Frisurfoto von dir hängt auf einer Plakatwand"
+          },
+          {
+            "en": "Your alarm ringtone plays during a wedding",
+            "de": "Dein Weckerton läuft während einer Hochzeit"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which rule would improve your group chat?",
+          "de": "Welche Regel würde euren Gruppenchat verbessern?"
+        },
+        "options": [
+          {
+            "en": "All plans require a clear time and place",
+            "de": "Jeder Plan braucht Zeit und Ort"
+          },
+          {
+            "en": "Every voice message must be under 30 seconds",
+            "de": "Jede Sprachnachricht bleibt unter 30 Sekunden"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which weird job would you rather try for one day?",
+          "de": "Welchen seltsamen Beruf würdest du einen Tag testen?"
+        },
+        "options": [
+          {
+            "en": "Professional queue stander",
+            "de": "Professioneller Schlangesteher"
+          },
+          {
+            "en": "Emergency party playlist curator",
+            "de": "Notfall-Party-DJ"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What sounds more awkward?",
+          "de": "Was wäre unangenehmer?"
+        },
+        "options": [
+          {
+            "en": "Being first to arrive at a stranger’s party",
+            "de": "Als Erster auf einer fremden Party sein"
+          },
+          {
+            "en": "Being last to leave your own party",
+            "de": "Als Letzter die eigene Party verlassen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which would be more useful tonight?",
+          "de": "Was wäre heute Abend praktischer?"
+        },
+        "options": [
+          {
+            "en": "A rewind button for conversations",
+            "de": "Eine Rückspultaste für Gespräche"
+          },
+          {
+            "en": "A pause button for time",
+            "de": "Eine Pausetaste für die Zeit"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which inconvenience would you eliminate?",
+          "de": "Welches Ärgernis würdest du abschaffen?"
+        },
+        "options": [
+          {
+            "en": "Having to wait in queues",
+            "de": "In Schlangen warten"
+          },
+          {
+            "en": "People talking during movies",
+            "de": "Leute, die während Filmen reden"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Would you rather be responsible for…",
+          "de": "Wofür wärst du lieber verantwortlich?"
+        },
+        "options": [
+          {
+            "en": "The group playlist all night",
+            "de": "Die Playlist des ganzen Abends"
+          },
+          {
+            "en": "Organising everyone’s ride home",
+            "de": "Den Heimweg für alle organisieren"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which message is more irritating?",
+          "de": "Welche Nachricht nervt mehr?"
+        },
+        "options": [
+          {
+            "en": "“We should meet soon” with no date",
+            "de": "„Wir müssen uns bald treffen“ ohne Datum"
+          },
+          {
+            "en": "A six-minute voice message",
+            "de": "Eine sechsminütige Sprachnachricht"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which friend-group job would you rather take?",
+          "de": "Welche Aufgabe übernimmst du lieber?"
+        },
+        "options": [
+          {
+            "en": "Plan every restaurant",
+            "de": "Jedes Restaurant auswählen"
+          },
+          {
+            "en": "Handle every shared expense",
+            "de": "Jede gemeinsame Ausgabe abrechnen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "You must give up one convenience for a month. Which?",
+          "de": "Auf welchen Komfort verzichtest du einen Monat?"
+        },
+        "options": [
+          {
+            "en": "Food delivery",
+            "de": "Lieferdienste"
+          },
+          {
+            "en": "Streaming platforms",
+            "de": "Streamingdienste"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which social mistake is harder to recover from?",
+          "de": "Welche soziale Panne ist schwerer zu retten?"
+        },
+        "options": [
+          {
+            "en": "Call someone the wrong name",
+            "de": "Jemanden mit falschem Namen ansprechen"
+          },
+          {
+            "en": "Forget why you introduced two friends",
+            "de": "Vergessen, warum du zwei Leute vorstellen wolltest"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which would make a better spontaneous evening?",
+          "de": "Was wäre der bessere spontane Abend?"
+        },
+        "options": [
+          {
+            "en": "Karaoke with strangers",
+            "de": "Karaoke mit Fremden"
+          },
+          {
+            "en": "A board-game tournament at home",
+            "de": "Ein Brettspielturnier zu Hause"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What would your group rather lose for one night?",
+          "de": "Worauf würde eure Runde eher einen Abend verzichten?"
+        },
+        "options": [
+          {
+            "en": "Music",
+            "de": "Musik"
+          },
+          {
+            "en": "Snacks",
+            "de": "Snacks"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What sounds more stressful?",
+          "de": "Was klingt stressiger?"
+        },
+        "options": [
+          {
+            "en": "Hosting a surprise party",
+            "de": "Eine Überraschungsparty organisieren"
+          },
+          {
+            "en": "Being surprised with a big party",
+            "de": "Mit einer großen Party überrascht werden"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which awkward moment would you prefer?",
+          "de": "Welche peinliche Situation wäre dir lieber?"
+        },
+        "options": [
+          {
+            "en": "Laugh at a joke you did not hear",
+            "de": "Über einen Witz lachen, den du nicht gehört hast"
+          },
+          {
+            "en": "Realise your mic was on during a call",
+            "de": "Im Anruf merken, dass dein Mikro an war"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which makes a better group holiday?",
+          "de": "Was macht den besseren Gruppenurlaub aus?"
+        },
+        "options": [
+          {
+            "en": "A detailed schedule",
+            "de": "Ein genauer Zeitplan"
+          },
+          {
+            "en": "Deciding everything spontaneously",
+            "de": "Alles spontan entscheiden"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which is worse at a gathering?",
+          "de": "Was ist bei einem Treffen schlimmer?"
+        },
+        "options": [
+          {
+            "en": "Someone changes the music every minute",
+            "de": "Jemand wechselt jede Minute die Musik"
+          },
+          {
+            "en": "Nobody can decide where to eat",
+            "de": "Niemand kann sich auf ein Restaurant einigen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which skill would help tonight?",
+          "de": "Welche Fähigkeit wäre heute hilfreicher?"
+        },
+        "options": [
+          {
+            "en": "Remembering every name",
+            "de": "Sich jeden Namen merken"
+          },
+          {
+            "en": "Knowing every song lyric",
+            "de": "Jeden Liedtext kennen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which is worse when everyone is hungry?",
+          "de": "Was ist schlimmer, wenn alle Hunger haben?"
+        },
+        "options": [
+          {
+            "en": "Someone says “anything is fine”",
+            "de": "Jemand sagt „Mir ist alles recht“"
+          },
+          {
+            "en": "Someone vetoes every suggestion",
+            "de": "Jemand lehnt jeden Vorschlag ab"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "For a spontaneous trip, which matters more?",
+          "de": "Was ist bei einem spontanen Ausflug wichtiger?"
+        },
+        "options": [
+          {
+            "en": "A great destination",
+            "de": "Ein tolles Reiseziel"
+          },
+          {
+            "en": "The right people",
+            "de": "Die richtigen Leute"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which is more awkward at a party?",
+          "de": "Was ist auf einer Party unangenehmer?"
+        },
+        "options": [
+          {
+            "en": "Forgetting a name twice",
+            "de": "Einen Namen zweimal vergessen"
+          },
+          {
+            "en": "Accidentally interrupting a story",
+            "de": "Eine Geschichte versehentlich unterbrechen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which friend-group problem deserves a meeting?",
+          "de": "Welches Problem in der Freundesgruppe braucht eine Besprechung?"
+        },
+        "options": [
+          {
+            "en": "Always being late",
+            "de": "Ständig zu spät kommen"
+          },
+          {
+            "en": "Never making decisions",
+            "de": "Nie Entscheidungen treffen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What ruins a film night faster?",
+          "de": "Was verdirbt einen Filmabend schneller?"
+        },
+        "options": [
+          {
+            "en": "Someone narrating every scene",
+            "de": "Jemand kommentiert jede Szene"
+          },
+          {
+            "en": "Someone looking at their phone constantly",
+            "de": "Jemand schaut ständig aufs Handy"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "If you can only keep one, which stays?",
+          "de": "Wenn nur eines bleiben darf: Was wählt ihr?"
+        },
+        "options": [
+          {
+            "en": "A group holiday once a year",
+            "de": "Ein gemeinsamer Urlaub im Jahr"
+          },
+          {
+            "en": "A regular dinner every month",
+            "de": "Ein gemeinsames Essen jeden Monat"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which compliment means more?",
+          "de": "Welches Kompliment bedeutet mehr?"
+        },
+        "options": [
+          {
+            "en": "“You always make me laugh”",
+            "de": "„Du bringst mich immer zum Lachen“"
+          },
+          {
+            "en": "“I can depend on you”",
+            "de": "„Auf dich ist Verlass“"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which makes a better story later?",
+          "de": "Worüber lacht man später eher?"
+        },
+        "options": [
+          {
+            "en": "A ruined surprise",
+            "de": "Eine vermasselte Überraschung"
+          },
+          {
+            "en": "A wildly wrong first impression",
+            "de": "Ein völlig falscher erster Eindruck"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Who has the harder job on a group trip?",
+          "de": "Wer hat auf einer Gruppenreise den schwierigeren Job?"
+        },
+        "options": [
+          {
+            "en": "The person planning everything",
+            "de": "Die Person, die alles plant"
+          },
+          {
+            "en": "The person keeping the peace",
+            "de": "Die Person, die Streit verhindert"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What is the more painful restaurant moment?",
+          "de": "Was ist im Restaurant unangenehmer?"
+        },
+        "options": [
+          {
+            "en": "Everyone orders the same thing",
+            "de": "Alle bestellen das Gleiche"
+          },
+          {
+            "en": "Someone suggests splitting an uneven bill equally",
+            "de": "Jemand will eine ungleiche Rechnung gleich teilen"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which would your group choose?",
+          "de": "Wofür würde sich eure Runde entscheiden?"
+        },
+        "options": [
+          {
+            "en": "A surprise guest",
+            "de": "Ein Überraschungsgast"
+          },
+          {
+            "en": "A surprise activity",
+            "de": "Eine Überraschungsaktion"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What is harder to admit?",
+          "de": "Was gibt man schwerer zu?"
+        },
+        "options": [
+          {
+            "en": "You were wrong about a film",
+            "de": "Du lagst bei einem Film falsch"
+          },
+          {
+            "en": "You gave terrible directions",
+            "de": "Du hast völlig falsch navigiert"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which social habit is worse?",
+          "de": "Welche Angewohnheit ist schlimmer?"
+        },
+        "options": [
+          {
+            "en": "Leaving messages unanswered for days",
+            "de": "Tagelang nicht antworten"
+          },
+          {
+            "en": "Sending ten messages instead of one",
+            "de": "Zehn Nachrichten statt einer schicken"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which is more fun with friends?",
+          "de": "Was macht mit Freunden mehr Spaß?"
+        },
+        "options": [
+          {
+            "en": "Planning an elaborate surprise",
+            "de": "Eine große Überraschung planen"
+          },
+          {
+            "en": "Improvising the whole evening",
+            "de": "Den ganzen Abend improvisieren"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which would get a bigger reaction?",
+          "de": "Was sorgt für mehr Aufregung?"
+        },
+        "options": [
+          {
+            "en": "Someone announcing a secret hobby",
+            "de": "Jemand erzählt von einem geheimen Hobby"
+          },
+          {
+            "en": "Someone revealing a strange talent",
+            "de": "Jemand zeigt ein ungewöhnliches Talent"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which is easier to forgive?",
+          "de": "Was verzeiht man leichter?"
+        },
+        "options": [
+          {
+            "en": "A forgotten birthday",
+            "de": "Ein vergessener Geburtstag"
+          },
+          {
+            "en": "A cancelled plan at short notice",
+            "de": "Eine kurzfristige Absage"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "Which invitation sounds better?",
+          "de": "Welche Einladung klingt besser?"
+        },
+        "options": [
+          {
+            "en": "“Come over, we will figure it out”",
+            "de": "„Kommt vorbei, wir überlegen dann“"
+          },
+          {
+            "en": "“I planned the whole evening”",
+            "de": "„Ich habe den Abend komplett geplant“"
+          }
+        ]
+      },
+      {
+        "type": "majority",
+        "q": {
+          "en": "What is the better party soundtrack?",
+          "de": "Was ist die bessere Party-Musik?"
+        },
+        "options": [
+          {
+            "en": "Songs everyone can sing",
+            "de": "Lieder, die alle mitsingen können"
+          },
+          {
+            "en": "Surprising songs nobody expected",
+            "de": "Unerwartete Lieder, mit denen niemand rechnet"
+          }
+        ]
+      }
+    ],
+    "same": [
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a food you would never order on a first date.",
+          "de": "Nennt ein Essen, das ihr beim ersten Date niemals bestellen würdet."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name the worst thing to forget on a trip.",
+          "de": "Nennt die schlimmste Sache, die man auf einer Reise vergessen kann."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something everyone pretends to understand.",
+          "de": "Nennt etwas, bei dem alle so tun, als würden sie es verstehen."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name the first thing you buy if you win a ridiculous amount of money.",
+          "de": "Nennt das Erste, das ihr mit einem absurd hohen Gewinn kaufen würdet."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a place where people suddenly become impatient.",
+          "de": "Nennt einen Ort, an dem Menschen plötzlich ungeduldig werden."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a phrase that always sounds suspicious.",
+          "de": "Nennt einen Satz, der immer verdächtig klingt."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a party snack that disappears first.",
+          "de": "Nennt einen Partysnack, der immer zuerst weg ist."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name the worst song for a wedding entrance.",
+          "de": "Nennt den schlechtesten Song für einen Hochzeitseinzug."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name one thing people always forget when packing.",
+          "de": "Nennt eine Sache, die beim Packen ständig vergessen wird."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a city people often suggest for a spontaneous weekend trip.",
+          "de": "Nennt eine Stadt, die oft für einen spontanen Wochenendtrip vorgeschlagen wird."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something people pretend not to care about but secretly do.",
+          "de": "Nennt etwas, das Leuten angeblich egal ist, obwohl es ihnen wichtig ist."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something almost everyone complains about on trains.",
+          "de": "Nennt etwas, worüber sich im Zug fast alle beschweren."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name one snack that disappears first at a party.",
+          "de": "Nennt einen Snack, der auf Partys immer zuerst weg ist."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a phrase people say when they are about to leave but are not actually leaving.",
+          "de": "Nennt einen Satz, den Menschen kurz vor dem Gehen sagen, ohne dann zu gehen."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a household object you would hate to share with strangers.",
+          "de": "Nennt einen Haushaltsgegenstand, den ihr ungern mit Fremden teilen würdet."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a topic people unexpectedly argue about at dinner.",
+          "de": "Nennt ein Thema, über das beim Essen unerwartet gestritten wird."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a tourist activity you would secretly enjoy despite making fun of it.",
+          "de": "Nennt eine Touristenaktion, die ihr insgeheim toll fändet, obwohl ihr euch darüber lustig macht."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a sound that immediately makes a room uncomfortable.",
+          "de": "Nennt ein Geräusch, das sofort für eine unangenehme Stimmung sorgt."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a bad habit people promise to stop every January.",
+          "de": "Nennt eine schlechte Angewohnheit, die man jedes Jahr im Januar aufgeben will."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a food nobody can agree on how to pronounce.",
+          "de": "Nennt ein Essen, bei dessen Aussprache sich niemand einig ist."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name an item that everyone loses in their own home.",
+          "de": "Nennt etwas, das jeder in seiner Wohnung ständig verlegt."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a sentence that starts an argument in a group chat.",
+          "de": "Nennt einen Satz, der im Gruppenchat zuverlässig eine Diskussion auslöst."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a job you would be terrible at for exactly one day.",
+          "de": "Nennt einen Beruf, in dem ihr schon nach einem Tag scheitern würdet."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something guests always search for in a new apartment.",
+          "de": "Nennt etwas, das Gäste in einer neuen Wohnung immer suchen."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a harmless reason people leave a party early.",
+          "de": "Nennt einen harmlosen Grund, eine Party früher zu verlassen."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a snack that disappears before dinner starts.",
+          "de": "Nennt einen Snack, der schon vor dem Essen weg ist."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a sentence that usually means a plan is falling apart.",
+          "de": "Nennt einen Satz, an dem man merkt, dass ein Plan scheitert."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a place where you would never want to lose your phone.",
+          "de": "Nennt einen Ort, an dem ihr euer Handy auf keinen Fall verlieren wollt."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something people bring to a party but never use.",
+          "de": "Nennt etwas, das man auf eine Party mitbringt, aber nie benutzt."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name the first task nobody wants on a group holiday.",
+          "de": "Nennt die erste Aufgabe, die im Gruppenurlaub niemand übernehmen will."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a song everyone knows only the chorus of.",
+          "de": "Nennt ein Lied, von dem alle nur den Refrain kennen."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something that becomes more difficult with five opinions.",
+          "de": "Nennt etwas, das mit fünf Meinungen plötzlich schwierig wird."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a tiny annoyance that can ruin a train journey.",
+          "de": "Nennt eine Kleinigkeit, die eine Bahnfahrt ruinieren kann."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a boring thing people suddenly discuss passionately.",
+          "de": "Nennt ein langweiliges Thema, über das Menschen plötzlich leidenschaftlich reden."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a food someone always brings too much of.",
+          "de": "Nennt ein Essen, von dem jemand immer zu viel mitbringt."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something that disappears at every party.",
+          "de": "Nenne etwas, das auf jeder Party verschwindet."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a sentence someone says when they are about to leave but do not.",
+          "de": "Nenne einen Satz, den jemand beim Abschied sagt, ohne dann zu gehen."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name the one thing everyone forgets to pack.",
+          "de": "Nenne etwas, das beim Packen alle vergessen."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something you always argue about before ordering food.",
+          "de": "Nenne etwas, worüber man vor dem Essenbestellen immer diskutiert."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something that always takes longer than expected.",
+          "de": "Nenne etwas, das immer länger dauert als gedacht."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a harmless thing that makes people competitive.",
+          "de": "Nenne etwas Harmloses, bei dem Menschen ehrgeizig werden."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something people claim they can cook well.",
+          "de": "Nenne etwas, das angeblich jeder gut kochen kann."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a place where you always run into somebody you know.",
+          "de": "Nenne einen Ort, an dem man ständig Bekannte trifft."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a reason why a group photo takes five attempts.",
+          "de": "Nenne einen Grund, warum ein Gruppenfoto fünf Versuche braucht."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name an item people always borrow and forget to return.",
+          "de": "Nenne etwas, das man ausleiht und vergisst zurückzugeben."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a phrase used to avoid choosing a restaurant.",
+          "de": "Nenne einen Satz, mit dem man die Restaurantwahl vermeidet."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a classic excuse for being five minutes late.",
+          "de": "Nenne eine typische Ausrede für fünf Minuten Verspätung."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name a board game that starts arguments.",
+          "de": "Nenne ein Brettspiel, bei dem man sich streitet."
+        }
+      },
+      {
+        "type": "same",
+        "q": {
+          "en": "Name something that becomes funnier the next day.",
+          "de": "Nenne etwas, das am nächsten Tag noch lustiger ist."
+        }
+      }
+    ],
+    "know": [
+      {
+        "type": "know",
+        "q": {
+          "en": "Which message annoys me the most?",
+          "de": "Welche Nachricht nervt mich am meisten?"
+        },
+        "options": [
+          {
+            "en": "“We need to talk.”",
+            "de": "„Wir müssen reden.“"
+          },
+          {
+            "en": "“Can you call me?”",
+            "de": "„Kannst du mich anrufen?“"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which would I choose for a free weekend?",
+          "de": "Was würde ich an einem freien Wochenende wählen?"
+        },
+        "options": [
+          {
+            "en": "City trip",
+            "de": "Städtetrip"
+          },
+          {
+            "en": "Cabin in the mountains",
+            "de": "Berghütte"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which inconvenience would I eliminate forever?",
+          "de": "Welche Unannehmlichkeit würde ich für immer abschaffen?"
+        },
+        "options": [
+          {
+            "en": "Delayed trains",
+            "de": "Zugverspätungen"
+          },
+          {
+            "en": "Slow internet",
+            "de": "Langsames Internet"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which would I rather be famous for?",
+          "de": "Wofür wäre ich lieber bekannt?"
+        },
+        "options": [
+          {
+            "en": "A successful song",
+            "de": "Einen Hit"
+          },
+          {
+            "en": "A bestselling book",
+            "de": "Einen Bestseller"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which small luxury would I choose?",
+          "de": "Welchen kleinen Luxus würde ich wählen?"
+        },
+        "options": [
+          {
+            "en": "A completely free taxi ride",
+            "de": "Eine völlig kostenlose Taxifahrt"
+          },
+          {
+            "en": "A perfect seat on every train",
+            "de": "Immer den perfekten Sitzplatz im Zug"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What makes me leave a party earliest?",
+          "de": "Was bringt mich am ehesten dazu, eine Party früh zu verlassen?"
+        },
+        "options": [
+          {
+            "en": "A very early morning",
+            "de": "Ein sehr früher Morgen"
+          },
+          {
+            "en": "The music",
+            "de": "Die Musik"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which skill would I rather have instantly?",
+          "de": "Welche Fähigkeit hätte ich am liebsten sofort?"
+        },
+        "options": [
+          {
+            "en": "Play any instrument",
+            "de": "Jedes Instrument spielen"
+          },
+          {
+            "en": "Speak ten languages",
+            "de": "Zehn Sprachen sprechen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What would I do with an unexpected free afternoon?",
+          "de": "Was mache ich mit einem plötzlich freien Nachmittag?"
+        },
+        "options": [
+          {
+            "en": "Go outside",
+            "de": "Rausgehen"
+          },
+          {
+            "en": "Sleep",
+            "de": "Schlafen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which group task would I volunteer for?",
+          "de": "Welche Aufgabe würde ich in einer Gruppe übernehmen?"
+        },
+        "options": [
+          {
+            "en": "Organize the food",
+            "de": "Essen organisieren"
+          },
+          {
+            "en": "Make the playlist",
+            "de": "Playlist erstellen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which holiday problem would bother me most?",
+          "de": "Welches Urlaubsproblem würde mich am meisten stören?"
+        },
+        "options": [
+          {
+            "en": "Bad weather",
+            "de": "Schlechtes Wetter"
+          },
+          {
+            "en": "Lost luggage",
+            "de": "Verlorenes Gepäck"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What would I most likely order first?",
+          "de": "Was würde ich am ehesten zuerst bestellen?"
+        },
+        "options": [
+          {
+            "en": "Something familiar",
+            "de": "Etwas Vertrautes"
+          },
+          {
+            "en": "The house specialty",
+            "de": "Die Spezialität des Hauses"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What kind of surprise would I like most?",
+          "de": "Welche Überraschung würde mir am besten gefallen?"
+        },
+        "options": [
+          {
+            "en": "A spontaneous trip",
+            "de": "Ein spontaner Ausflug"
+          },
+          {
+            "en": "Favorite food",
+            "de": "Mein Lieblingsessen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which invitation would I accept first?",
+          "de": "Welche Einladung würde ich eher annehmen?"
+        },
+        "options": [
+          {
+            "en": "A last-minute concert",
+            "de": "Ein spontanes Konzert"
+          },
+          {
+            "en": "A quiet dinner with friends",
+            "de": "Ein ruhiges Essen mit Freunden"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What is more like me on a trip?",
+          "de": "Was passt im Urlaub eher zu mir?"
+        },
+        "options": [
+          {
+            "en": "Plan everything",
+            "de": "Alles planen"
+          },
+          {
+            "en": "Make it up as I go",
+            "de": "Spontan entscheiden"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "When I arrive at a party, I usually…",
+          "de": "Wenn ich auf eine Party komme, …"
+        },
+        "options": [
+          {
+            "en": "Find the food first",
+            "de": "suche ich zuerst das Essen"
+          },
+          {
+            "en": "Look for someone I know",
+            "de": "suche ich zuerst ein bekanntes Gesicht"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What would I rather get as a gift?",
+          "de": "Was bekomme ich lieber geschenkt?"
+        },
+        "options": [
+          {
+            "en": "Tickets to an experience",
+            "de": "Tickets für ein Erlebnis"
+          },
+          {
+            "en": "Something useful every day",
+            "de": "Etwas Nützliches für jeden Tag"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which job would I hate more?",
+          "de": "Welchen Job würde ich weniger mögen?"
+        },
+        "options": [
+          {
+            "en": "Making endless phone calls",
+            "de": "Den ganzen Tag telefonieren"
+          },
+          {
+            "en": "Doing monotonous paperwork",
+            "de": "Ständig monotone Formulare ausfüllen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Would I rather spend a free Saturday…",
+          "de": "Wie verbringe ich lieber einen freien Samstag?"
+        },
+        "options": [
+          {
+            "en": "Out exploring",
+            "de": "Draußen unterwegs"
+          },
+          {
+            "en": "At home with a project",
+            "de": "Zuhause mit einem Projekt"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which minor inconvenience would annoy me more?",
+          "de": "Was würde mich eher nerven?"
+        },
+        "options": [
+          {
+            "en": "Someone always being late",
+            "de": "Jemand kommt ständig zu spät"
+          },
+          {
+            "en": "Someone cancelling last minute",
+            "de": "Jemand sagt in letzter Minute ab"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which would I prefer to host?",
+          "de": "Was würde ich lieber veranstalten?"
+        },
+        "options": [
+          {
+            "en": "A dinner with six friends",
+            "de": "Ein Essen mit sechs Freunden"
+          },
+          {
+            "en": "A party with twenty people",
+            "de": "Eine Party mit zwanzig Leuten"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Would I be more likely to…",
+          "de": "Was würde ich eher tun?"
+        },
+        "options": [
+          {
+            "en": "Sing first at karaoke",
+            "de": "Beim Karaoke als Erstes singen"
+          },
+          {
+            "en": "Be the last to sing",
+            "de": "Beim Karaoke als Letztes singen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What would I rather be good at?",
+          "de": "Worin wäre ich lieber richtig gut?"
+        },
+        "options": [
+          {
+            "en": "Dancing",
+            "de": "Tanzen"
+          },
+          {
+            "en": "Public speaking",
+            "de": "Vor Leuten reden"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "If plans fall apart, do I usually…",
+          "de": "Wenn Pläne platzen, …"
+        },
+        "options": [
+          {
+            "en": "Find a plan B immediately",
+            "de": "suche ich sofort Plan B"
+          },
+          {
+            "en": "Enjoy the unexpected free time",
+            "de": "freue ich mich über freie Zeit"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Where would I go on a surprise weekend?",
+          "de": "Wohin würde ich spontan übers Wochenende fahren?"
+        },
+        "options": [
+          {
+            "en": "A busy city",
+            "de": "In eine lebendige Stadt"
+          },
+          {
+            "en": "Somewhere quiet in nature",
+            "de": "An einen ruhigen Ort in der Natur"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which group task suits me better?",
+          "de": "Welche Gruppenaufgabe liegt mir eher?"
+        },
+        "options": [
+          {
+            "en": "Keeping track of money",
+            "de": "Auf das Geld achten"
+          },
+          {
+            "en": "Keeping everyone entertained",
+            "de": "Für Unterhaltung sorgen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which matters more for a good evening?",
+          "de": "Was ist mir für einen guten Abend wichtiger?"
+        },
+        "options": [
+          {
+            "en": "Great music",
+            "de": "Gute Musik"
+          },
+          {
+            "en": "Great conversation",
+            "de": "Gute Gespräche"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What would I choose for a shared meal?",
+          "de": "Was würde ich für unser gemeinsames Essen wählen?"
+        },
+        "options": [
+          {
+            "en": "A familiar favourite",
+            "de": "Etwas Bewährtes"
+          },
+          {
+            "en": "Something new to try",
+            "de": "Etwas Neues ausprobieren"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "On a long journey, do I prefer…",
+          "de": "Auf einer langen Fahrt mag ich lieber …"
+        },
+        "options": [
+          {
+            "en": "Talking with people",
+            "de": "mich unterhalten"
+          },
+          {
+            "en": "Listening to music in peace",
+            "de": "in Ruhe Musik hören"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which would I choose for a surprise evening?",
+          "de": "Was würde ich bei einem Überraschungsabend wählen?"
+        },
+        "options": [
+          {
+            "en": "A cosy gathering",
+            "de": "Eine gemütliche Runde"
+          },
+          {
+            "en": "A crowded event",
+            "de": "Ein großes Event"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "When the group cannot decide, do I usually…",
+          "de": "Wenn die Runde sich nicht entscheiden kann, …"
+        },
+        "options": [
+          {
+            "en": "Suggest a compromise",
+            "de": "schlage ich einen Kompromiss vor"
+          },
+          {
+            "en": "Pick something for everyone",
+            "de": "entscheide ich für alle"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which would embarrass me more?",
+          "de": "Was wäre mir peinlicher?"
+        },
+        "options": [
+          {
+            "en": "Having to sing solo",
+            "de": "Alleine singen zu müssen"
+          },
+          {
+            "en": "Being the centre of a surprise toast",
+            "de": "Bei einer Überraschungsrede im Mittelpunkt zu stehen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What would I do with one free afternoon?",
+          "de": "Was würde ich mit einem freien Nachmittag machen?"
+        },
+        "options": [
+          {
+            "en": "Visit friends",
+            "de": "Freunde besuchen"
+          },
+          {
+            "en": "Stay home without plans",
+            "de": "Ohne Pläne zu Hause bleiben"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "At karaoke, would I…",
+          "de": "Beim Karaoke würde ich …"
+        },
+        "options": [
+          {
+            "en": "Pick a song everyone knows",
+            "de": "ein bekanntes Lied wählen"
+          },
+          {
+            "en": "Choose something unexpected",
+            "de": "mit einem unerwarteten Lied überraschen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which group task would I rather take?",
+          "de": "Welche Aufgabe übernehme ich lieber?"
+        },
+        "options": [
+          {
+            "en": "Organise the budget",
+            "de": "Das Budget planen"
+          },
+          {
+            "en": "Plan the activities",
+            "de": "Die Aktivitäten planen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "If I received a surprise gift, would I prefer…",
+          "de": "Was wäre mir als Überraschungsgeschenk lieber?"
+        },
+        "options": [
+          {
+            "en": "An experience together",
+            "de": "Ein gemeinsames Erlebnis"
+          },
+          {
+            "en": "Something useful",
+            "de": "Etwas Praktisches"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which compliment would make me happier?",
+          "de": "Über welches Kompliment würde ich mich mehr freuen?"
+        },
+        "options": [
+          {
+            "en": "“You are hilarious”",
+            "de": "„Du bist witzig“"
+          },
+          {
+            "en": "“You really listen”",
+            "de": "„Du hörst richtig zu“"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "When travelling, would I rather…",
+          "de": "Auf Reisen würde ich lieber …"
+        },
+        "options": [
+          {
+            "en": "Explore without a map",
+            "de": "Ohne Karte losziehen"
+          },
+          {
+            "en": "Follow a well-made plan",
+            "de": "Einem guten Plan folgen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "For our next gathering, would I pick…",
+          "de": "Für unser nächstes Treffen würde ich wählen …"
+        },
+        "options": [
+          {
+            "en": "Cooking together",
+            "de": "Zusammen kochen"
+          },
+          {
+            "en": "Ordering food",
+            "de": "Essen bestellen"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Which challenge would I actually try?",
+          "de": "Welche Herausforderung würde ich wirklich versuchen?"
+        },
+        "options": [
+          {
+            "en": "An improv scene",
+            "de": "Eine Impro-Szene"
+          },
+          {
+            "en": "A short comedy speech",
+            "de": "Eine kurze Comedy-Rede"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "At a concert, would I rather…",
+          "de": "Bei einem Konzert würde ich lieber …"
+        },
+        "options": [
+          {
+            "en": "Be near the stage",
+            "de": "Nahe an der Bühne stehen"
+          },
+          {
+            "en": "Have room to move",
+            "de": "Genug Platz zum Bewegen haben"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "What matters more to me at a party?",
+          "de": "Was ist mir auf einer Party wichtiger?"
+        },
+        "options": [
+          {
+            "en": "Good conversations",
+            "de": "Gute Gespräche"
+          },
+          {
+            "en": "Great music",
+            "de": "Gute Musik"
+          }
+        ]
+      },
+      {
+        "type": "know",
+        "q": {
+          "en": "Would I rather receive…",
+          "de": "Was würde ich lieber bekommen?"
+        },
+        "options": [
+          {
+            "en": "A handwritten note",
+            "de": "Einen handgeschriebenen Brief"
+          },
+          {
+            "en": "A spontaneous invitation",
+            "de": "Eine spontane Einladung"
+          }
+        ]
+      }
+    ]
+  },
+  "comedy": {
+    "punchline": [
+      {
+        "type": "punchline",
+        "q": {
+          "en": "The group chat elects a president. What is the first scandal?",
+          "de": "Euer Gruppenchat wählt einen Präsidenten. Was ist der erste Skandal?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What is the worst opening line for a tour guide who is completely lost?",
+          "de": "Was wäre der schlechteste erste Satz eines Reiseleiters, der sich völlig verlaufen hat?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A restaurant offers a “trust the chef” menu. What disclaimer should be printed on it?",
+          "de": "Ein Restaurant bietet ein „Vertrau dem Koch“-Menü an. Welcher Warnhinweis sollte darauf stehen?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What is the most suspicious sentence you could hear from a hotel receptionist?",
+          "de": "Welcher Satz von der Hotelrezeption würde euch am meisten beunruhigen?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Your phone starts writing your autobiography. What is the chapter title for this week?",
+          "de": "Dein Handy schreibt deine Autobiografie. Wie heißt das Kapitel über diese Woche?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A job interview ends with the interviewer whispering one sentence. What is it?",
+          "de": "Ein Bewerbungsgespräch endet mit einem geflüsterten Satz. Welchem?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A flight attendant announces a brand-new airline policy. What is it?",
+          "de": "Eine Flugbegleiterin verkündet eine brandneue Fluglinienregel. Welche?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Someone creates a dating app specifically for people who hate dating apps. What is the slogan?",
+          "de": "Jemand erfindet eine Dating-App für Leute, die Dating-Apps hassen. Wie lautet der Slogan?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A bakery introduces an expensive monthly membership. What benefit does it promise?",
+          "de": "Eine Bäckerei startet eine teure Monatsmitgliedschaft. Welchen Vorteil verspricht sie?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Your flatmates leave a passive-aggressive note on the fridge. What does it say?",
+          "de": "Deine Mitbewohner hinterlassen eine passiv-aggressive Notiz am Kühlschrank. Was steht darauf?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What line could make a wedding photographer immediately lose their job?",
+          "de": "Mit welchem Satz könnte ein Hochzeitsfotograf sofort seinen Job verlieren?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A museum labels an object “Please do not question why this is here.” What is it?",
+          "de": "Ein Museum beschriftet ein Objekt mit „Bitte nicht fragen, warum das hier steht“. Was ist es?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Your friends write a warning label about you. What is the fine print?",
+          "de": "Deine Freunde schreiben einen Warnhinweis über dich. Was steht im Kleingedruckten?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What is a terrible slogan for a gym that never opens on time?",
+          "de": "Was wäre ein schrecklicher Slogan für ein Fitnessstudio, das nie pünktlich öffnet?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "The navigation app gives up on you. What is its final message?",
+          "de": "Deine Navi-App gibt dich auf. Wie lautet ihre letzte Nachricht?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Your friends form a committee to decide your next haircut. What is their statement?",
+          "de": "Deine Freunde gründen einen Ausschuss für deinen nächsten Haarschnitt. Was verkünden sie?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A chef refuses to describe the special of the day. What reason do they give?",
+          "de": "Ein Koch weigert sich, das Tagesgericht zu beschreiben. Welche Begründung gibt er?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What is the worst sentence to hear after lending someone your laptop?",
+          "de": "Welchen Satz möchtest du nach dem Verleihen deines Laptops auf keinen Fall hören?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A group trip has an official warning label. What does it say?",
+          "de": "Euer Gruppenausflug bekommt einen offiziellen Warnhinweis. Was steht darauf?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A hotel advertises an “authentic local experience”. What went terribly wrong?",
+          "de": "Ein Hotel wirbt mit einem „authentischen Erlebnis“. Was ging gründlich schief?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Your boss announces a revolutionary new meeting format. What is it?",
+          "de": "Dein Chef kündigt eine revolutionäre Meetingform an. Welche?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What is the most suspicious item to find in a shared fridge?",
+          "de": "Was wäre der verdächtigste Fund in einem Gemeinschaftskühlschrank?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A wedding planner gives the couple one terrible piece of advice. What is it?",
+          "de": "Ein Hochzeitsplaner gibt dem Paar einen schrecklichen Rat. Welchen?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What would your friends put in your official user manual?",
+          "de": "Was würden deine Freunde in deine offizielle Bedienungsanleitung schreiben?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "The bus driver delivers a surprise announcement. What is it?",
+          "de": "Der Busfahrer hat eine überraschende Durchsage. Welche?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "A new gym claims zero effort is required. What is its secret?",
+          "de": "Ein neues Fitnessstudio verspricht null Anstrengung. Was ist sein Geheimnis?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Someone publishes a guide titled “How Not to Host a Party”. What is chapter one?",
+          "de": "Jemand veröffentlicht „Wie man keine Party veranstaltet“. Wie heißt Kapitel eins?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Your group chat gets a warning label. What does it say?",
+          "de": "Euer Gruppenchat bekommt einen Warnhinweis. Was steht darauf?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Invent the most unconvincing reason to be late for dinner.",
+          "de": "Erfindet die unglaubwürdigste Ausrede, warum ihr zu spät zum Essen kommt."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Give this party the worst possible five-star review.",
+          "de": "Gebt dieser Party die schlechteste denkbare Fünf-Sterne-Bewertung."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What should the official rulebook of your friendship group forbid?",
+          "de": "Was müsste das offizielle Regelbuch eurer Freundesgruppe verbieten?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Invent a terrible slogan for a dating profile.",
+          "de": "Erfindet einen schrecklichen Slogan für ein Datingprofil."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What would be written in the terms and conditions of this evening?",
+          "de": "Was stünde in den AGB für diesen Abend?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Make up a one-line complaint about a completely normal restaurant.",
+          "de": "Erfindet eine Ein-Satz-Beschwerde über ein völlig normales Restaurant."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Invent a message that guarantees everyone leaves a group chat.",
+          "de": "Erfindet eine Nachricht, nach der garantiert alle einen Gruppenchat verlassen."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What is the worst name for an app that plans parties?",
+          "de": "Wie sollte man eine App zur Partyplanung auf keinen Fall nennen?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Your friend opens a café. What is the sign that it will fail?",
+          "de": "Ein Freund eröffnet ein Café. Welches Schild verrät, dass es scheitern wird?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Invent the world’s least reassuring flight announcement.",
+          "de": "Erfindet die weltweit beunruhigendste Durchsage im Flugzeug."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What is the worst possible first line of a wedding speech?",
+          "de": "Was wäre der schlimmste erste Satz einer Hochzeitsrede?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Your group needs an official warning sign. What does it say?",
+          "de": "Eure Runde braucht ein offizielles Warnschild. Was steht darauf?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What is the worst thing to write in a wedding guestbook?",
+          "de": "Was ist der schlimmste Satz für ein Hochzeitsgästebuch?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Give a terrible name to your group’s next holiday.",
+          "de": "Gebt eurem nächsten gemeinsamen Urlaub einen furchtbaren Namen."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Invent the most suspicious but harmless excuse for leaving early.",
+          "de": "Erfindet die verdächtigste harmlose Ausrede fürs frühe Gehen."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What would a brutally honest restaurant menu say?",
+          "de": "Was stünde auf einer brutal ehrlichen Speisekarte?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Write the worst possible tagline for a friendship app.",
+          "de": "Erfindet den schlimmsten Werbespruch für eine Freundschafts-App."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What would your group be banned from doing at a hotel?",
+          "de": "Was würde eure Freundesgruppe im Hotel verboten bekommen?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What should a self-checkout machine say when it judges your groceries?",
+          "de": "Was soll eine Selbstbedienungskasse über deinen Einkauf sagen?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Write a truly unhelpful travel review in one sentence.",
+          "de": "Schreibt eine vollkommen nutzlose Reisebewertung in einem Satz."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "What is the least inspiring team motto?",
+          "de": "Was ist das unmotivierendste Teammotto?"
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Name a television show based on your friend group.",
+          "de": "Erfindet einen Serientitel über eure Freundesgruppe."
+        }
+      },
+      {
+        "type": "punchline",
+        "q": {
+          "en": "Give the worst possible opening line for a motivational speech.",
+          "de": "Erfindet den schlechtesten Einstieg in eine Motivationsrede."
+        }
+      }
+    ],
+    "pitch": [
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a subscription that decides where your group eats.",
+          "de": "Verkauf ein Abo, das für eure Gruppe das Restaurant auswählt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch an alarm clock for people who always hit snooze.",
+          "de": "Verkauf einen Wecker für Menschen, die ständig auf Schlummern drücken."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a device that translates awkward silence.",
+          "de": "Verkauf ein Gerät, das peinliches Schweigen übersetzt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch an app that settles arguments about song choices.",
+          "de": "Verkauf eine App, die Streit um die Musikauswahl beendet."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a suitcase that chooses your holiday destination.",
+          "de": "Verkauf einen Koffer, der dein Reiseziel aussucht."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a restaurant that has exactly one menu item.",
+          "de": "Verkauf ein Restaurant mit genau einem Gericht."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a calendar that refuses unrealistic plans.",
+          "de": "Verkauf einen Kalender, der unrealistische Pläne ablehnt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch an umbrella that only works for two people.",
+          "de": "Verkauf einen Regenschirm, der nur zu zweit funktioniert."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a doorbell that decides whether visitors are welcome.",
+          "de": "Verkauf eine Türklingel, die Gäste selbst auswählt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a travel guide for people who hate sightseeing.",
+          "de": "Verkauf einen Reiseführer für Menschen, die Sehenswürdigkeiten hassen."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell an app that tells your friends you are five minutes away.",
+          "de": "Verkauf eine App, die deinen Freunden immer „Bin in fünf Minuten da“ schreibt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a party playlist selected by the quietest guest.",
+          "de": "Verkauf eine Party-Playlist, die der stillste Gast auswählt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a service that tells people how to leave a party politely.",
+          "de": "Verkauf einen Dienst, der Menschen zeigt, wie sie sich höflich von einer Party verabschieden."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a chair designed for awkward family dinners.",
+          "de": "Verkauf einen Stuhl speziell für peinliche Familienessen."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a travel app for friends who never agree on a destination.",
+          "de": "Verkauf eine Reise-App für Freunde, die sich nie auf ein Ziel einigen."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a phone setting that prevents embarrassing messages.",
+          "de": "Verkauf eine Handyeinstellung, die peinliche Nachrichten verhindert."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a gym membership for people who only want the smoothie bar.",
+          "de": "Verkauf eine Fitnessstudio-Mitgliedschaft nur für die Smoothie-Bar."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell an invitation that gently discourages annoying guests.",
+          "de": "Verkauf eine Einladung, die nervige Gäste freundlich fernhält."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a hotel room that helps you pack before checkout.",
+          "de": "Verkauf ein Hotelzimmer, das dir vor dem Auschecken beim Packen hilft."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a polite excuse generator for refusing extra meetings.",
+          "de": "Verkauf einen höflichen Ausredengenerator für zusätzliche Meetings."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a kitchen gadget that makes sharing the last slice fair.",
+          "de": "Verkauf ein Küchengerät, das das letzte Stück gerecht verteilt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell an app that detects when a story has gone on too long.",
+          "de": "Verkauf eine App, die merkt, wenn eine Geschichte zu lange dauert."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a jacket that tells you when you have forgotten something.",
+          "de": "Verkauf eine Jacke, die merkt, wenn du etwas vergessen hast."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a calendar that knows when friends are only saying maybe.",
+          "de": "Verkauf einen Kalender, der ein halbherziges „Vielleicht“ erkennt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a service that politely ends conversations that are going nowhere.",
+          "de": "Verkauf einen Dienst, der endlose Gespräche höflich beendet."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a shared calendar that refuses impossible group plans.",
+          "de": "Verkauf einen Gruppenkalender, der unmögliche Pläne ablehnt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a restaurant that serves only the dish the group agrees on.",
+          "de": "Verkauf ein Restaurant, das nur Gerichte serviert, auf die sich alle einigen."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a suitcase that packs itself but chooses one random item.",
+          "de": "Verkauf einen Koffer, der selbst packt, aber einen Gegenstand zufällig auswählt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a friendship contract with a ridiculous cancellation clause.",
+          "de": "Verkauf einen Freundschaftsvertrag mit einer absurden Kündigungsklausel."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch an app that turns long voice messages into dramatic trailers.",
+          "de": "Verkauf eine App, die lange Sprachnachrichten in dramatische Trailer verwandelt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Sell a smart chair that chooses who sits next to whom.",
+          "de": "Verkauf einen Stuhl, der bestimmt, wer neben wem sitzt."
+        }
+      },
+      {
+        "type": "pitch",
+        "q": {
+          "en": "Pitch a subscription that delivers one excellent excuse every Friday.",
+          "de": "Verkauf ein Abo, das jeden Freitag eine perfekte Ausrede liefert."
+        }
+      }
+    ],
+    "expert": [
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain why choosing a restaurant takes longer than eating there.",
+          "de": "Erkläre, warum die Restaurantwahl länger dauert als das Essen."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Present your theory of why everyone loses their keys at once.",
+          "de": "Stelle deine Theorie vor, warum alle gleichzeitig ihre Schlüssel verlieren."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain the hidden rules of choosing seats on a train.",
+          "de": "Erkläre die geheimen Regeln der Sitzplatzwahl im Zug."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Give a lecture on the science of group-chat silence.",
+          "de": "Halte einen Vortrag über die Wissenschaft der Gruppenchat-Stille."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain how to appear busy while doing absolutely nothing.",
+          "de": "Erkläre, wie man beschäftigt wirkt, ohne etwas zu tun."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Describe a formal training program for wedding guests.",
+          "de": "Stelle ein offizielles Trainingsprogramm für Hochzeitsgäste vor."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain why every group needs a friend who reads the menu first.",
+          "de": "Erkläre, warum jede Gruppe jemanden braucht, der die Speisekarte vorher liest."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Present a serious theory of why plans change after midnight.",
+          "de": "Präsentiere eine ernsthafte Theorie über Planänderungen nach Mitternacht."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain the economics of sharing the last piece of pizza.",
+          "de": "Erkläre die Wirtschaftslehre rund um das letzte Stück Pizza."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Give an expert briefing on awkward elevator conversations.",
+          "de": "Halte ein Expertengespräch über peinliche Unterhaltungen im Aufzug."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain the etiquette of splitting a restaurant bill.",
+          "de": "Erkläre die Etikette beim Teilen einer Restaurantrechnung."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Propose a study on why some people take 20 minutes to say goodbye.",
+          "de": "Stelle eine Studie darüber vor, warum manche Leute 20 Minuten für den Abschied brauchen."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Give a scholarly explanation of why people keep the last slice of pizza.",
+          "de": "Erkläre wissenschaftlich, warum Leute das letzte Stück Pizza liegen lassen."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain the unwritten rules for picking a seat at a party.",
+          "de": "Erkläre die ungeschriebenen Regeln für die Sitzplatzwahl auf Partys."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Describe how someone can take ten minutes to say goodbye.",
+          "de": "Erkläre, wie man zehn Minuten für eine Verabschiedung braucht."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Present the social psychology of the group photo.",
+          "de": "Erkläre die Sozialpsychologie eines Gruppenfotos."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Present a theory for why bad weather starts precisely at a barbecue.",
+          "de": "Präsentiere eine Theorie, warum es genau zum Grillabend regnet."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain how people negotiate which song plays next.",
+          "de": "Erkläre, wie Menschen über das nächste Lied verhandeln."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Describe the invisible hierarchy of shared apartment fridge shelves.",
+          "de": "Beschreibe die unsichtbare Hierarchie im Gemeinschaftskühlschrank."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain why people pretend to know where they are walking.",
+          "de": "Erkläre, warum Menschen so tun, als wüssten sie, wo sie hingehen."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Present the economics of group taxi fares.",
+          "de": "Erkläre die Ökonomie gemeinsamer Taxifahrten."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Give an expert overview of why nobody wants to choose the film.",
+          "de": "Halte einen Expertenvortrag darüber, warum niemand den Film wählen will."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain why groups take longer to say goodbye than to say hello.",
+          "de": "Erkläre wissenschaftlich, warum Gruppen länger fürs Verabschieden brauchen als fürs Begrüßen."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Give a lecture on the exact point at which a short story becomes too long.",
+          "de": "Halte einen Vortrag über den Moment, in dem eine kurze Geschichte zu lang wird."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Present the psychology of sharing the last piece of dessert.",
+          "de": "Erkläre die Psychologie hinter dem letzten Stück Nachtisch."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain why a group chat goes quiet as soon as a decision is needed.",
+          "de": "Erkläre, warum ein Gruppenchat verstummt, sobald eine Entscheidung ansteht."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Defend your theory of the perfect seating arrangement at dinner.",
+          "de": "Verteidige deine Theorie über die perfekte Sitzordnung beim Essen."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain the unspoken rules of joining a conversation halfway through.",
+          "de": "Erkläre die ungeschriebenen Regeln, wenn man mitten in ein Gespräch einsteigt."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Present the economics of ordering food for a group.",
+          "de": "Erkläre die Wirtschaftslehre hinter einer Gruppenbestellung."
+        }
+      },
+      {
+        "type": "expert",
+        "q": {
+          "en": "Explain why every friend group has a designated photographer.",
+          "de": "Erkläre, warum jede Freundesgruppe eine feste Person für Fotos hat."
+        }
+      }
+    ],
+    "toast": [
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a toast to the friend who can never choose a restaurant.",
+          "de": "Halte einen Trinkspruch auf die Person, die nie ein Restaurant auswählen kann."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the person who always takes the group photos.",
+          "de": "Halte eine Ansprache auf die Person, die immer Gruppenfotos macht."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the greatest failed plan your group ever made.",
+          "de": "Würdige den großartigsten gescheiterten Plan eurer Gruppe."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the last person to arrive, in a completely friendly way.",
+          "de": "Halte eine freundliche Ansprache auf die Person, die zuletzt gekommen ist."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the friend who always remembers to bring snacks.",
+          "de": "Würdige die Person, die immer Snacks mitbringt."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a moving toast to an empty chair.",
+          "de": "Halte eine bewegende Ansprache auf einen leeren Stuhl."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast your group’s most unnecessary shared tradition.",
+          "de": "Würdige eure unnötigste Gruppentradition."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the person who could turn a short story into an epic.",
+          "de": "Würdige jemanden, der aus einer kurzen Geschichte ein Epos macht."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast your future selves ten years from tonight.",
+          "de": "Stoßt mit einer Ansprache auf euch in zehn Jahren an."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the smallest victory someone had this week.",
+          "de": "Würdige den kleinsten Erfolg dieser Woche."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the one time your group made a plan and stuck to it.",
+          "de": "Würdige das eine Mal, als eure Gruppe einen Plan eingehalten hat."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast a snack as if it just won a lifetime achievement award.",
+          "de": "Halte eine Dankesrede für einen Snack, als hätte er einen Lebenswerkpreis gewonnen."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the friend who is always “five minutes away.”",
+          "de": "Stoßt auf die Person an, die immer „in fünf Minuten da“ ist."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the inventor of the mute button.",
+          "de": "Stoßt auf den Erfinder der Stummschalttaste an."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the last piece of pizza.",
+          "de": "Stoßt auf das letzte Stück Pizza an."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the friend who remembers everyone’s birthdays.",
+          "de": "Stoßt auf den Freund an, der sich alle Geburtstage merkt."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the group chat that never decides anything.",
+          "de": "Stoßt auf die Chatgruppe an, die sich nie entscheidet."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a toast to the friend who can make any story twice as long.",
+          "de": "Haltet eine Ansprache für die Person, die jede Geschichte doppelt so lang macht."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the person who keeps a group chat alive on quiet days.",
+          "de": "Stoßt auf die Person an, die den Gruppenchat selbst an ruhigen Tagen am Laufen hält."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a toast to the inventor of the snooze button.",
+          "de": "Haltet einen Toast auf die Erfindung der Schlummertaste."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the small victory of getting home without forgetting anything.",
+          "de": "Stoßt darauf an, ausnahmsweise nichts auf dem Heimweg vergessen zu haben."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a speech thanking the person who brought the snacks tonight.",
+          "de": "Haltet eine Dankesrede für die Person, die heute Snacks mitgebracht hat."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the art of confidently taking the wrong turn.",
+          "de": "Stoßt auf die Kunst an, selbstbewusst falsch abzubiegen."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a toast to the most unnecessary argument your group has ever had.",
+          "de": "Haltet einen Toast auf eure unnötigste Diskussion aller Zeiten."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the friend who always volunteers first and learns the rules later.",
+          "de": "Stoßt auf die Person an, die sich zuerst meldet und die Regeln später lernt."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a toast to the next weekend when everyone is actually free.",
+          "de": "Stoßt auf das nächste Wochenende an, an dem wirklich alle Zeit haben."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the forgotten umbrella that has traveled to three homes.",
+          "de": "Stoßt auf den vergessenen Regenschirm an, der schon in drei Wohnungen war."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a toast to an imaginary award that this group surely deserves.",
+          "de": "Haltet eine Dankesrede für einen erfundenen Preis, den eure Gruppe verdient."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast an inside joke that makes no sense to outsiders.",
+          "de": "Stoßt auf einen Insiderwitz an, den Außenstehende niemals verstehen werden."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a toast to a plan that was cancelled but somehow made the evening better.",
+          "de": "Halte eine Rede auf einen abgesagten Plan, der den Abend besser gemacht hat."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the friend who always remembers the small details.",
+          "de": "Würdige die Person, die sich immer an die kleinen Details erinnert."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a toast to a meal that everyone argued about ordering.",
+          "de": "Halte eine Rede auf ein Essen, über dessen Bestellung alle gestritten haben."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the courage of the first person to start dancing.",
+          "de": "Würdige den Mut der Person, die zuerst tanzt."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast the group’s most legendary wrong turn.",
+          "de": "Würdige euren legendärsten Umweg."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a formal toast to the friend who always brings something useful.",
+          "de": "Halte eine feierliche Rede auf die Person, die immer etwas Nützliches dabeihat."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Toast an unexpectedly great ordinary weekday evening.",
+          "de": "Würdige einen ganz normalen Wochentag, der unerwartet toll wurde."
+        }
+      },
+      {
+        "type": "toast",
+        "q": {
+          "en": "Give a toast to plans that start with “just one hour”.",
+          "de": "Halte eine Rede auf Treffen, die mit „nur eine Stunde“ beginnen."
+        }
+      }
+    ]
+  },
+  "bluff": {
+    "confession": [
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a short story about a plan that failed at the last minute. It can be true or invented.",
+          "de": "Erzähl kurz von einem Plan, der in letzter Minute scheiterte. Wahr oder erfunden."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe the strangest harmless misunderstanding you have had with a stranger.",
+          "de": "Erzähl von deinem seltsamsten harmlosen Missverständnis mit Fremden."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about an invitation you nearly declined.",
+          "de": "Erzähl von einer Einladung, die du fast abgesagt hättest."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about getting completely lost somewhere familiar.",
+          "de": "Erzähl davon, wie du dich an einem vertrauten Ort völlig verlaufen hast."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe a dinner that did not go according to plan.",
+          "de": "Erzähl von einem Essen, bei dem alles anders lief als geplant."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about a surprising conversation on public transport.",
+          "de": "Erzähl von einer überraschenden Unterhaltung in Bus oder Bahn."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about an unexpected guest at a gathering.",
+          "de": "Erzähl von einem unerwarteten Gast bei einem Treffen."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe a time you were convinced you had the right address.",
+          "de": "Erzähl von einem Moment, in dem du dir bei einer Adresse völlig sicher warst."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about a small act of kindness with unexpected consequences.",
+          "de": "Erzähl von einer kleinen netten Geste mit überraschenden Folgen."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe an awkward situation that became funny later.",
+          "de": "Erzähl von einer peinlichen Situation, über die du später lachen konntest."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about a surprise you struggled to keep secret.",
+          "de": "Erzähl von einer Überraschung, die du kaum geheim halten konntest."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about a mistake that actually improved your day.",
+          "de": "Erzähl von einem Fehler, der deinen Tag am Ende besser gemacht hat."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe a moment when you confidently misunderstood instructions.",
+          "de": "Erzähl von einem Moment, in dem du eine Anleitung selbstsicher falsch verstanden hast."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about the most chaotic group decision you witnessed.",
+          "de": "Erzähl von der chaotischsten Gruppenentscheidung, die du erlebt hast."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe the oddest reason a meeting or event was delayed.",
+          "de": "Erzähl vom seltsamsten Grund, warum ein Treffen verschoben wurde."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about a gift that caused unexpected confusion.",
+          "de": "Erzähl von einem Geschenk, das unerwartete Verwirrung ausgelöst hat."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a true or invented story about an invitation you misunderstood.",
+          "de": "Erzähl eine wahre oder erfundene Geschichte über eine falsch verstandene Einladung."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a true or invented story about accidentally joining the wrong group.",
+          "de": "Erzähl eine wahre oder erfundene Geschichte darüber, wie du bei der falschen Gruppe gelandet bist."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe a true or made-up moment when a tiny favour became a huge task.",
+          "de": "Erzähl von einem echten oder erfundenen Moment, in dem aus einem kleinen Gefallen eine Riesenaufgabe wurde."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a story about meeting someone twice without recognising them. True or invented.",
+          "de": "Erzähl eine wahre oder erfundene Geschichte über jemanden, den du beim zweiten Treffen nicht wiedererkannt hast."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe a real or fictional surprise that went off-script.",
+          "de": "Erzähl von einer echten oder erfundenen Überraschung, die völlig anders lief als geplant."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a true or invented story about the most ridiculous timing imaginable.",
+          "de": "Erzähl eine wahre oder erfundene Geschichte über unglaublich schlechtes Timing."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe a genuine or made-up time you offered to help and immediately regretted it.",
+          "de": "Erzähl von einem echten oder erfundenen Moment, in dem du Hilfe angeboten und es sofort bereut hast."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a true or invented story about a small mistake that became a shared joke.",
+          "de": "Erzähl eine wahre oder erfundene Geschichte über einen kleinen Fehler, der zum Insiderwitz wurde."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Describe a true or imagined situation where you had to improvise a speech.",
+          "de": "Erzähl eine wahre oder erfundene Geschichte über eine spontane Rede, die du halten musstest."
+        }
+      },
+      {
+        "type": "confession",
+        "q": {
+          "en": "Tell a true or invented story about a completely unnecessary detour.",
+          "de": "Erzähl eine wahre oder erfundene Geschichte über einen völlig unnötigen Umweg."
+        }
+      }
+    ],
+    "twotruths": [
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about your school days. Exactly one must be invented.",
+          "de": "Erzähl drei Dinge aus deiner Schulzeit. Genau eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about foods you have tried. One is false.",
+          "de": "Erzähl drei Dinge über Essen, das du probiert hast. Eines stimmt nicht."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about places you have visited. One is made up.",
+          "de": "Erzähl drei Dinge über Orte, an denen du warst. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about jobs or chores you have done. One is fake.",
+          "de": "Erzähl drei Dinge über Jobs oder Aufgaben, die du erledigt hast. Eines ist gelogen."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about concerts or events. Exactly one is fiction.",
+          "de": "Erzähl drei Dinge über Konzerte oder Veranstaltungen. Genau eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about your first impressions of people. One is false.",
+          "de": "Erzähl drei Dinge über erste Eindrücke von Menschen. Eines ist gelogen."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about getting lost or delayed. One did not happen.",
+          "de": "Erzähl drei Dinge über Verlaufen oder Verspätungen. Eines ist nie passiert."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about things you have broken accidentally. One is invented.",
+          "de": "Erzähl drei Dinge, die du versehentlich kaputt gemacht hast. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about unusual gifts you have received. One is fictional.",
+          "de": "Erzähl drei Dinge über ungewöhnliche Geschenke. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about childhood hobbies. One is not true.",
+          "de": "Erzähl drei Dinge über Hobbys aus deiner Kindheit. Eines stimmt nicht."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about your travel habits. One is invented.",
+          "de": "Erzähl drei Dinge über deine Reisegewohnheiten. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about your cooking skills. One is fake.",
+          "de": "Erzähl drei Dinge über deine Kochkünste. Eines ist gelogen."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about small fears you have had. One is invented.",
+          "de": "Erzähl drei Dinge über kleine Ängste, die du mal hattest. Eine ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about surprise encounters. One never happened.",
+          "de": "Erzähl drei Dinge über zufällige Begegnungen. Eine hat nie stattgefunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about party experiences. One is fiction.",
+          "de": "Erzähl drei Dinge über Partyerlebnisse. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about your guilty pleasures. One is made up.",
+          "de": "Erzähl drei Dinge über deine heimlichen Vorlieben. Eine ist ausgedacht."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about moments you felt brave. One is false.",
+          "de": "Erzähl drei Dinge über Momente, in denen du mutig warst. Eines ist gelogen."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about things you have learned from friends. One is invented.",
+          "de": "Erzähl drei Dinge, die du von Freunden gelernt hast. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about the worst timing you ever experienced. One is fake.",
+          "de": "Erzähl drei Dinge über besonders schlechtes Timing. Eines ist ausgedacht."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about times someone mistook you for another person. One is made up.",
+          "de": "Erzähl drei Dinge, bei denen dich jemand verwechselt hat. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things you have done to impress somebody. Exactly one is made up.",
+          "de": "Nenne drei Dinge, mit denen du jemanden beeindrucken wolltest. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things you once believed as a child. Exactly one is false.",
+          "de": "Nenne drei Dinge, die du als Kind geglaubt hast. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about a trip that went wrong. Exactly one is fiction.",
+          "de": "Nenne drei Dinge über eine Reise, bei der etwas schiefging. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things you would be nervous to try. One is not true.",
+          "de": "Nenne drei Dinge, vor denen du Respekt hättest. Eines stimmt nicht."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about a restaurant experience. One is invented.",
+          "de": "Nenne drei Dinge über Restaurantbesuche. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about gifts you have given. One is false.",
+          "de": "Nenne drei Dinge über Geschenke, die du gemacht hast. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about friends you made in unexpected places. One is fictional.",
+          "de": "Nenne drei Dinge über Freundschaften an unerwarteten Orten. Eines ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about your most impulsive decisions. One never happened.",
+          "de": "Nenne drei deiner spontansten Entscheidungen. Eine ist nie passiert."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things about unusual skills you have tried to learn. One is made up.",
+          "de": "Nenne drei ungewöhnliche Fähigkeiten, die du lernen wolltest. Eine ist erfunden."
+        }
+      },
+      {
+        "type": "twotruths",
+        "q": {
+          "en": "Tell three things you would change about your last holiday. One is a lie.",
+          "de": "Nenne drei Dinge, die du am letzten Urlaub ändern würdest. Eines ist gelogen."
+        }
+      }
+    ],
+    "fact": [
+      {
+        "type": "fact",
+        "q": {
+          "en": "Which planet has the shortest day in our Solar System?",
+          "de": "Welcher Planet hat den kürzesten Tag in unserem Sonnensystem?"
+        },
+        "factId": "fact-000"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "Which mammal is capable of true sustained flight?",
+          "de": "Welches Säugetier kann tatsächlich dauerhaft fliegen?"
+        },
+        "factId": "fact-001"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "What is the world’s largest living bird by height?",
+          "de": "Welcher heute lebende Vogel ist nach Körpergröße der größte?"
+        },
+        "factId": "fact-002"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "Which chemical element has the symbol W?",
+          "de": "Welches chemische Element hat das Symbol W?"
+        },
+        "factId": "fact-003"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "On which planet is Olympus Mons, a giant volcano?",
+          "de": "Auf welchem Planeten liegt der riesige Vulkan Olympus Mons?"
+        },
+        "factId": "fact-004"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "Which country is home to the ancient city of Petra?",
+          "de": "In welchem Land liegt die antike Stadt Petra?"
+        },
+        "factId": "fact-005"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "What is the hardest natural mineral on the Mohs scale?",
+          "de": "Welches natürliche Mineral hat die höchste Härte auf der Mohs-Skala?"
+        },
+        "factId": "fact-006"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "Which planet is famous for rotating almost on its side?",
+          "de": "Welcher Planet dreht sich fast auf der Seite?"
+        },
+        "factId": "fact-007"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "What is the most abundant gas in Earth’s atmosphere?",
+          "de": "Welches Gas ist in der Erdatmosphäre am häufigsten?"
+        },
+        "factId": "fact-008"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "Which metal is liquid at ordinary room temperature?",
+          "de": "Welches Metall ist bei normaler Raumtemperatur flüssig?"
+        },
+        "factId": "fact-009"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "Which planet has the most prominent ring system?",
+          "de": "Welcher Planet ist für sein besonders auffälliges Ringsystem bekannt?"
+        },
+        "factId": "fact-010"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "Which metal is the chemical element with atomic number 29?",
+          "de": "Welches Metall hat die Ordnungszahl 29?"
+        },
+        "factId": "fact-011"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "What is the only country with a non-rectangular national flag?",
+          "de": "Welches Land hat als einziges keine rechteckige Nationalflagge?"
+        },
+        "factId": "fact-012"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "Which animal has three hearts?",
+          "de": "Welches Tier hat drei Herzen?"
+        },
+        "factId": "fact-013"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "What word means a word spelled the same backwards?",
+          "de": "Wie nennt man ein Wort, das rückwärts dasselbe ergibt?"
+        },
+        "factId": "fact-014"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "What is the capital of New Zealand?",
+          "de": "Was ist die Hauptstadt von Neuseeland?"
+        },
+        "factId": "fact-015"
+      },
+      {
+        "type": "fact",
+        "q": {
+          "en": "What is the largest species of penguin?",
+          "de": "Welche Pinguinart wird am größten?"
+        },
+        "factId": "fact-016"
+      }
+    ]
+  }
+}
