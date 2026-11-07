@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import prompts from '../src/public-prompts.json' with {type:'json'};
 const privateData=Object.fromEntries(prompts.bluff.fact.map((f,i)=>[f.factId,{answer:{en:`Fixture answer ${i}`,de:`Testantwort ${i}`},source:{name:'Testing fixture',url:'https://example.invalid/facts'}}]));
-class TestSocket {constructor(){this.messages=[];this.attachment={};this.closed=false;}serializeAttachment(a){this.attachment=a;}deserializeAttachment(){return this.attachment;}send(text){this.peer.messages.push(JSON.parse(text));}close(){this.closed=true;}}
+class TestSocket {constructor(){this.messages=[];this.attachment={};this.closed=false;this.readyState=1;}serializeAttachment(a){this.attachment=a;}deserializeAttachment(){return this.attachment;}send(text){this.peer.messages.push(JSON.parse(text));}close(){this.closed=true;this.readyState=3;}}
 globalThis.WebSocketPair=class {constructor(){const client=new TestSocket(),server=new TestSocket();client.peer=server;server.peer=client;return {0:client,1:server};}};
 const NativeResponse=globalThis.Response;
 globalThis.Response=class extends NativeResponse {constructor(body,opts={}){if(opts.status===101){super(null,{status:200,headers:opts.headers});Object.defineProperty(this,'status',{value:101});this.webSocket=opts.webSocket;}else super(body,opts);}};

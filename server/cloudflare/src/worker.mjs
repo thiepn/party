@@ -75,7 +75,10 @@ export class PartyRoom {
         }
         if(!priority)return new Response('Invalid admission proof',{status:403});
       }
-      const sockets=this.ctx.getWebSockets();
+      // getWebSockets() may retain CLOSING handshakes without a reciprocal Close.
+      // Count only OPEN sockets toward active admission limits; these stale
+      // transports must not block legitimate new guests or reconnects.
+      const sockets=this.ctx.getWebSockets().filter(ws=>ws.readyState===1);
       const unverified=sockets.filter(ws=>{const a=ws.deserializeAttachment();return !a?.pid&&!a?.priority;}).length;
       if((!priority&&unverified>=PENDING_LIMIT)||sockets.length>=CONNECTION_LIMIT)
         return new Response('Room connections full',{status:429});
