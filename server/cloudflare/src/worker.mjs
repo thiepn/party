@@ -41,7 +41,7 @@ export class PartyRoom {
     for(const ws of this.ctx.getWebSockets()){const a=ws.deserializeAttachment();if(!a?.pid||!a?.nonce)continue;const p=this.core.player(a.pid);if(p&&p.nonce===a.nonce)p.connected=true;}
   }
   async getContent(){if(this.content)return this.content;const base=structuredClone(prompts);const file=await this.env.FACTS.get('chaos-club/room-facts.json');if(!file)throw new RoomError('Private Fact Trap content not configured.');const facts=await file.json();for(const x of base.bluff.fact){const f=facts[x.factId];if(!f?.answer?.en||!f?.answer?.de||!f?.source)throw new RoomError('Incomplete private facts.');x.answer=f.answer;x.source=f.source;}this.content=base;return base;}
-  async save(){if(!this.core)return;const s=this.core.s;s.createdAt=this.createdAt;s.createToken=this.createToken;try{await this.ctx.storage.put('room',s);}catch{throw new RoomWriteError('Room state could not be persisted.');}await this.schedule();}
+  async save(){if(!this.core)return;const s=this.core.s;s.createdAt=this.createdAt;s.createToken=this.createToken;try{await this.schedule();await this.ctx.storage.put('room',s);}catch{throw new RoomWriteError('Room state could not be persisted.');}}
   async schedule(){const s=this.core?.s;if(!s)return;const connected=s.players.some(p=>p.connected);let due=this.createdAt+MAX_AGE;
     // Idle TTL only expires rooms without connected seats. Scheduling it for an active room
     // would cause a repeated one-second alarm after two hours of no state changes.
