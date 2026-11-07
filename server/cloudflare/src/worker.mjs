@@ -3,6 +3,7 @@ import prompts from './public-prompts.json' with {type:'json'};
 import {RoomCore,RoomError,safeString} from './room-core.mjs';
 const ROOM_RE=/^[A-HJ-NP-Z2-9]{8}$/;const CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const TTL=2*60*60*1000,MAX_AGE=12*60*60*1000,FAILOVER=15*1000;
+const PENDING_TTL=10_000,PENDING_LIMIT=5,CONNECTION_LIMIT=16;
 class RoomWriteError extends Error {}
 function randomCode(){const bytes=new Uint8Array(8);crypto.getRandomValues(bytes);return [...bytes].map(x=>CHARS[x%CHARS.length]).join('');}
 function secret(){const v=new Uint8Array(32);crypto.getRandomValues(v);return [...v].map(x=>x.toString(16).padStart(2,'0')).join('');}
@@ -20,7 +21,10 @@ export default {async fetch(req,env){const url=new URL(req.url);if(url.pathname=
     }
     if(url.pathname==='/ws'&&req.method==='GET'&&req.headers.get('Upgrade')?.toLowerCase()==='websocket'){
       const code=(url.searchParams.get('code')||'').toUpperCase();if(!ROOM_RE.test(code))return response({error:'Invalid room code'},400,origin);
-      return env.ROOMS.get(env.ROOMS.idFromName(code)).fetch(new Request('https://room.internal/socket',{headers:{Upgrade:'websocket','X-Room-Code':code}}));
+      const headers={Upgrade:'websocket','X-Room-Code':code};
+      const protocols=req.headers.get('Sec-WebSocket-Protocol');
+      if(protocols)headers['Sec-WebSocket-Protocol']=protocols;
+      return env.ROOMS.get(env.ROOMS.idFromName(code)).fetch(new Request('https://room.internal/socket',{headers}));
     }
     return response({error:'Not found'},404,origin);
 }};
@@ -43,10 +47,43 @@ export class PartyRoom {
     // would cause a repeated one-second alarm after two hours of no state changes.
     if(!connected)due=Math.min(due,s.modifiedAt+TTL);
     if(connected&&s.hostDisconnectedAt)due=Math.min(due,s.hostDisconnectedAt+FAILOVER);
+    const now=Date.now();
+    for(const ws of this.ctx.getWebSockets()){
+      const a=ws.deserializeAttachment();
+      if(!a?.pid&&Number.isFinite(a?.openedAt)&&a.openedAt+PENDING_TTL>now)
+        due=Math.min(due,a.openedAt+PENDING_TTL);
+    }
     await this.ctx.storage.setAlarm(Math.max(Date.now()+1000,due));}
   async fetch(req){await this.ready;const url=new URL(req.url);
     if(url.pathname==='/init'&&req.method==='POST'){if(this.core||this.createToken)return new Response(null,{status:409});const t=req.headers.get('X-Create-Token'),code=req.headers.get('X-Room-Code');if(!t||t.length!==64||!ROOM_RE.test(code||''))return new Response(null,{status:400});this.createToken=t;this.pendingCode=code;this.createdAt=Date.now();await this.ctx.storage.put('init',{token:t,createdAt:this.createdAt,code});await this.ctx.storage.setAlarm(Date.now()+TTL);return new Response(null,{status:201});}
-    if(url.pathname==='/socket'){const code=req.headers.get('X-Room-Code');if(!ROOM_RE.test(code||''))return new Response('Invalid code',{status:400});if(!this.core){if(!this.createToken||this.pendingCode!==code)return new Response('Room not found',{status:404});this.core=new RoomCore(code,{});await this.ctx.storage.delete('init');await this.save();}if(this.core.s.code!==code)return new Response('Wrong room',{status:403});if(Date.now()-this.createdAt>MAX_AGE)return new Response('Room expired',{status:410});if(this.ctx.getWebSockets().length>12)return new Response('Room connections full',{status:429});const pair=new WebSocketPair(),[client,server]=Object.values(pair);this.ctx.acceptWebSocket(server);server.serializeAttachment({pid:null,nonce:null});return new Response(null,{status:101,webSocket:client});}
+    if(url.pathname==='/socket'){const code=req.headers.get('X-Room-Code');if(!ROOM_RE.test(code||''))return new Response('Invalid code',{status:400});if(!this.core){if(!this.createToken||this.pendingCode!==code)return new Response('Room not found',{status:404});this.core=new RoomCore(code,{});await this.ctx.storage.delete('init');await this.save();}if(this.core.s.code!==code)return new Response('Wrong room',{status:403});if(Date.now()-this.createdAt>MAX_AGE)return new Response('Room expired',{status:410});// Unverified guests share a small, time-bounded admission pool. The host and
+      // returning seats can prove their existing secret in a WebSocket subprotocol;
+      // it is never placed in a URL. A valid proof only reserves transport capacity:
+      // gameplay actions still validate the credential and rotate it on resume.
+      const offered=(req.headers.get('Sec-WebSocket-Protocol')||'').split(',').map(s=>s.trim());
+      const negotiated=offered.includes('chaos-room.v1');
+      const claimed=offered.find(s=>s.startsWith('cc-create.')||s.startsWith('cc-resume.'));
+      let priority=false;
+      if(claimed){
+        if(!negotiated)return new Response('Invalid admission proof',{status:403});
+        if(claimed.startsWith('cc-create.')){
+          const token=claimed.slice('cc-create.'.length);
+          priority=!!(this.createToken&&token===this.createToken&&!this.core.s.host);
+        }else{
+          const parsed=/^cc-resume\\.([0-9a-f-]{36})\\.([0-9a-f]{64})$/.exec(claimed);
+          priority=!!(parsed&&this.core.player(parsed[1])?.token===parsed[2]);
+        }
+        if(!priority)return new Response('Invalid admission proof',{status:403});
+      }
+      const sockets=this.ctx.getWebSockets();
+      const unverified=sockets.filter(ws=>{const a=ws.deserializeAttachment();return !a?.pid&&!a?.priority;}).length;
+      if((!priority&&unverified>=PENDING_LIMIT)||sockets.length>=CONNECTION_LIMIT)
+        return new Response('Room connections full',{status:429});
+      const pair=new WebSocketPair(),[client,server]=Object.values(pair);
+      this.ctx.acceptWebSocket(server);
+      server.serializeAttachment({pid:null,nonce:null,priority,openedAt:Date.now()});
+      await this.schedule();
+      return new Response(null,{status:101,webSocket:client,...(negotiated?{headers:{'Sec-WebSocket-Protocol':'chaos-room.v1'}}:{})});}
     return new Response('Not found',{status:404});
   }
   wsFor(p){return this.ctx.getWebSockets().find(ws=>{const a=ws.deserializeAttachment();return a?.pid===p.id&&a?.nonce===p.nonce;});}
@@ -92,7 +129,13 @@ export class PartyRoom {
   }
   async webSocketError(ws){await this.handleClose(ws);}
   async handleClose(ws){await this.ready;if(!this.core)return;const a=ws.deserializeAttachment();if(!a?.pid)return;const p=this.core.player(a.pid);if(!p||p.nonce!==a.nonce)return;p.connected=false;if(p.id===this.core.s.host)this.core.s.hostDisconnectedAt=Date.now();await this.broadcast();}
-  async alarm(){await this.ready;if(!this.core){await this.ctx.storage.deleteAll();this.createToken=null;return;}const s=this.core.s,now=Date.now();if(now>this.createdAt+MAX_AGE||(!s.players.some(p=>p.connected)&&now>s.modifiedAt+TTL)){for(const ws of this.ctx.getWebSockets())try{ws.close(4000,'Room expired');}catch{}await this.ctx.storage.deleteAll();this.core=null;return;}
+  async alarm(){await this.ready;if(!this.core){await this.ctx.storage.deleteAll();this.createToken=null;return;}const s=this.core.s,now=Date.now();
+    for(const ws of this.ctx.getWebSockets()){
+      const a=ws.deserializeAttachment();
+      if(!a?.pid&&(!Number.isFinite(a?.openedAt)||now>=a.openedAt+PENDING_TTL))
+        try{ws.close(4008,'Join timeout');}catch{}
+    }
+    if(now>this.createdAt+MAX_AGE||(!s.players.some(p=>p.connected)&&now>s.modifiedAt+TTL)){for(const ws of this.ctx.getWebSockets())try{ws.close(4000,'Room expired');}catch{}await this.ctx.storage.deleteAll();this.core=null;return;}
     if(s.hostDisconnectedAt&&now>=s.hostDisconnectedAt+FAILOVER){const old=this.core.player(s.host);if(old&&!old.connected){const replacement=s.players.find(p=>p.connected);if(replacement){s.host=replacement.id;s.hostDisconnectedAt=null;await this.broadcast();return;}}}
     await this.schedule();}
 }

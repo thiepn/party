@@ -44,7 +44,13 @@
     if(message.action==='create'){try{const r=await fetch(roomApi+'/rooms',{method:'POST',headers:{'content-type':'application/json'},body:'{}',cache:'no-store'});if(!r.ok)throw new Error('Room creation unavailable');const created=await r.json();code=created.code;message={...message,code,createToken:created.createToken};}catch{connecting=false;error=T('Online rooms are not available yet.','Online-Räume sind noch nicht verfügbar.');render();return;}}
     if(sock&&sock.readyState===WebSocket.OPEN)sock.close();
     stopReconnect=false;connecting=true;error='';render();
-    const ws=new WebSocket(socketUrl(code));sock=ws;
+    // Reserve capacity for the real host and reconnecting seats without putting
+    // their credentials in the room URL. Anonymous guests use the bounded pool.
+    const proof=message.action==='create'&&typeof message.createToken==='string'
+      ?'cc-create.'+message.createToken
+      :message.action==='resume'&&typeof message.id==='string'&&typeof message.token==='string'
+        ?'cc-resume.'+message.id+'.'+message.token:null;
+    const ws=proof?new WebSocket(socketUrl(code),['chaos-room.v1',proof]):new WebSocket(socketUrl(code));sock=ws;
     ws.onopen=()=>{if(ws!==sock)return;delay=750;ws.send(JSON.stringify(message));};
     ws.onmessage=(event)=>{
       if(ws!==sock)return;
