@@ -37,14 +37,15 @@ try{
   // One alarm, not a recurring JS timer, reclaims idle guest sockets.
   // This also checks that an established host stays usable across an idle span;
   // it is not by itself proof that the Durable Object was actually evicted.
+  const admittedGuestCount=opened.length-1;
   const startedWaiting=Date.now();
   const timeoutAt=startedWaiting+20000;
-  while(opened.slice(0,5).some(ws=>ws.readyState!==WebSocket.CLOSED)&&Date.now()<timeoutAt)
+  while(opened.slice(0,5).some(ws=>ws.readyState===WebSocket.OPEN)&&Date.now()<timeoutAt)
     await new Promise(resolve=>setTimeout(resolve,250));
   const states=opened.slice(0,5).map(ws=>ws.readyState);
   console.log('ADMISSION_IDLE_DIAG',JSON.stringify({waitedMs:Date.now()-startedWaiting,states}));
   assert.ok(states.every(s=>s!==WebSocket.OPEN),
-    'idle unauthenticated sockets must at least receive a close frame');
+    'idle unauthenticated sockets must begin closing within the bounded interval');
   const reopened=await dial(room.code);
   console.log('ADMISSION_RECLAIM_DIAG',JSON.stringify({status:reopened.status,states}));
   assert.equal(reopened.status,101,'new guest can connect after idle admission sockets expire');
@@ -56,6 +57,6 @@ try{
   });
   trusted.ws.send(JSON.stringify({action:'start',game:'social',mode:'majority',duration:'quick'}));
   assert.match((await stillActive).message,/Start requires 4/i);
-  console.log('ADMISSION_IDLE_RECOVERY_PASS',JSON.stringify({pendingExpired:5,newGuestAccepted:true,hostResponsive:true}));
-  console.log('ADMISSION_FLOOD_PASS',JSON.stringify({unverifiedAccepted:opened.length-1,unverifiedRefused:16-(opened.length-1),hostRecovered:true}));
+  console.log('ADMISSION_IDLE_RECOVERY_PASS',JSON.stringify({pendingCloseInitiated:5,newGuestAccepted:true,hostResponsive:true}));
+  console.log('ADMISSION_FLOOD_PASS',JSON.stringify({unverifiedAccepted:admittedGuestCount,unverifiedRefused:16-admittedGuestCount,hostRecovered:true}));
 }finally{for(const ws of opened)try{ws.terminate();}catch{}}
