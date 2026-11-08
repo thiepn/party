@@ -489,15 +489,18 @@ test('host failover and gameplay start revoke unredeemed invitations without tou
   assert.equal(host.room.core.s.host,joined.id,'connected redeemed guest becomes host');
   assert.notEqual(host.room.core.s.host,oldHostId);
   assert.equal((await invitedSocket(env,room,b,claimString(56))).status,403,'old host invite invalidated');
+  await host.room.webSocketMessage(claimed.webSocket.peer,JSON.stringify({action:'kick',target:oldHostId}));
   const replacement=await issued({send:m=>host.room.webSocketMessage(claimed.webSocket.peer,JSON.stringify(m)),
     cli:claimed.webSocket});
   assert.ok(replacement);
-  const c=await connect(env,room.code);
-  await c.send({action:'join',name:'Third'});
-  const d=await connect(env,room.code);
-  await d.send({action:'join',name:'Fourth'});
-  await host.room.webSocketMessage(claimed.webSocket.peer,JSON.stringify({action:'invite_revoke',id:replacement.id}));
+  for(const name of ['Second','Third','Fourth']){
+    const guest=await connect(env,room.code);
+    await guest.send({action:'join',name});
+    assert.ok(pop(guest,'joined').token);
+  }
   await host.room.webSocketMessage(claimed.webSocket.peer,JSON.stringify({action:'start',game:'social',mode:'majority',duration:'quick'}));
   assert.equal(host.room.core.s.stage,'answer');
   assert.equal(host.room.core.s.players.length,4);
+  assert.equal((await invitedSocket(env,room,replacement,claimString(57))).status,403,
+    'starting a game invalidates outstanding unredeemed invitations');
 });
