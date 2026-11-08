@@ -329,3 +329,117 @@ test('overlapping guest join survives failed persistence after delayed private R
   assert.equal(pop(clients[0],'state').stage,'prepare','start retry after storage recovery must succeed');
   assert.equal(room.core.s.players.length,5);
 });
+
+
+const INVITE_WS=(code,token,claim)=>'https://rooms.party.thiepn.dev/ws?code='+code;
+const inviteProof=(token,claim)=>'chaos-room.v1, cc-invite.'+token+'.'+claim;
+const claimString=i=>(i.toString(16).padStart(2,'0')).repeat(32);
+async function makeHostForInvites(){
+  const env=new TestEnv(),room=await init(env),host=await connect(env,room.code);
+  await host.send({action:'create',name:'Invitation host',createToken:room.createToken});
+  return {env,room,host};
+}
+async function issued(host){
+  await host.send({action:'invite_issue'});
+  const result=pop(host,'invite_created');
+  assert.match(result.token,/^[0-9a-f]{64}$/);
+  assert.match(result.id,/^[0-9a-f-]{36}$/);
+  return result;
+}
+async function invitedSocket(env,room,invitation,claim){
+  const result=await worker.fetch(request(INVITE_WS(room.code),{
+    headers:{Upgrade:'websocket','Sec-WebSocket-Protocol':inviteProof(invitation.token,claim)}
+  }),env);
+  return result;
+}
+test('invitation protects a first-time guest behind five anonymous sockets while preserving manual join',async()=>{
+  const {env,room,host}=await makeHostForInvites();
+  const inv=await issued(host),claim=claimString(41),flood=[];
+  for(let i=0;i<5;i++)flood.push(await connect(env,room.code));
+  const refused=await worker.fetch(request(INVITE_WS(room.code),{headers:{Upgrade:'websocket'}}),env);
+  assert.equal(refused.status,429,'ordinary guest is still bounded');
+  const admitted=await invitedSocket(env,room,inv,claim);
+  assert.equal(admitted.status,101,'real invitation must bypass saturated anonymous pending pool');
+  const server=admitted.webSocket.peer;
+  await host.room.webSocketMessage(server,JSON.stringify({action:'join',code:room.code,name:'Invited guest'}));
+  const first=admitted.webSocket.messages.find(x=>x.type==='joined');
+  assert.ok(first?.token,'persisted invited guest receives reconnect credentials');
+  assert.equal(host.room.core.s.players.length,2);
+  assert.equal(host.room.core.view(first.id).players.length,2);
+  assert.ok(!JSON.stringify(pop(host,'state')).includes(inv.token),'other players never see invitation secret');
+  const manual=await connect(env,room.code);
+  await manual.send({action:'join',name:'Manual guest'});
+  assert.equal(pop(manual,'joined').code,room.code,'manual code remains supported when unreserved seat exists');
+});
+test('invitation issue is current-host-only; bounded reservations cannot overbook seats',async()=>{
+  const {env,room,host}=await makeHostForInvites();
+  const guest=await connect(env,room.code);
+  await guest.send({action:'join',code:room.code,name:'Guest'});
+  await guest.send({action:'invite_issue'});
+  assert.match(pop(guest,'error').message,/host/i);
+  const links=[];
+  for(let i=0;i<4;i++)links.push(await issued(host));
+  await host.send({action:'invite_issue'});
+  assert.equal(host.cli.messages.filter(x=>x.type==='invite_created').length,4,
+    'two players plus four reserved seats fill capacity');
+  assert.equal(host.room.core.s.players.length,2);
+  const anon=await connect(env,room.code);
+  await anon.send({action:'join',name:'Cannot steal reserved seat'});
+  assert.match(pop(anon,'error').message,/reserved|full|invitation/i);
+  assert.ok(links.every(x=>x.token.length===64));
+});
+test('invitation claim is single-use with bound recovery and cannot create two seats',async()=>{
+  const {env,room,host}=await makeHostForInvites();
+  const inv=await issued(host),claim=claimString(2),other=claimString(3);
+  const a=await invitedSocket(env,room,inv,claim);
+  assert.equal(a.status,101);
+  const firstJoin=host.room.webSocketMessage(a.webSocket.peer,JSON.stringify({action:'join',name:'A'}));
+  await firstJoin;
+  const seat=a.webSocket.messages.find(x=>x.type==='joined');
+  assert.ok(seat);
+  const second=await invitedSocket(env,room,inv,other);
+  assert.equal(second.status,403,'different claim must never reuse redeemed invitation');
+  const same=await invitedSocket(env,room,inv,claim);
+  assert.equal(same.status,101,'same claimant can recover lost first response');
+  await host.room.webSocketMessage(same.webSocket.peer,JSON.stringify({action:'join',name:'A retry'}));
+  const recovered=same.webSocket.messages.find(x=>x.type==='joined');
+  assert.equal(recovered.id,seat.id);
+  assert.equal(host.room.core.s.players.length,2,'recovery must not create another player');
+});
+test('revoked invitations and transferred host permissions are enforced at join',async()=>{
+  const {env,room,host}=await makeHostForInvites();
+  const inv=await issued(host),claim=claimString(4);
+  const admitted=await invitedSocket(env,room,inv,claim);
+  assert.equal(admitted.status,101);
+  await host.send({action:'invite_revoke',id:inv.id});
+  await host.room.webSocketMessage(admitted.webSocket.peer,JSON.stringify({action:'join',name:'Revoked guest'}));
+  assert.equal(admitted.webSocket.messages.filter(x=>x.type==='joined').length,0);
+  const rejected=await invitedSocket(env,room,inv,claim);
+  assert.equal(rejected.status,403);
+  const manual=await connect(env,room.code);
+  await manual.send({action:'join',name:'Other host'});
+  const id=pop(manual,'joined').id;
+  const second=await issued(host);
+  await host.send({action:'transfer',target:id});
+  assert.equal((await invitedSocket(env,room,second,claimString(5))).status,403);
+  await host.send({action:'invite_issue'});
+  assert.match(pop(host,'error').message,/host/i);
+  const replacement=await issued(manual);
+  assert.ok(replacement.token);
+});
+test('invitation claim rollback after persistent storage failure remains redeemable',async()=>{
+  const {env,room,host}=await makeHostForInvites(),inv=await issued(host),claim=claimString(6);
+  const admitted=await invitedSocket(env,room,inv,claim);
+  assert.equal(admitted.status,101);
+  const storage=host.room.ctx.storage,put=storage.put.bind(storage);
+  storage.put=async()=>{throw new Error('INJECTED_INVITE_REDEMPTION_FAILURE');};
+  try{
+    await host.room.webSocketMessage(admitted.webSocket.peer,JSON.stringify({action:'join',name:'Should rollback'}));
+    assert.equal(admitted.webSocket.messages.filter(x=>x.type==='joined').length,0);
+    assert.equal(host.room.core.s.players.length,1);
+    assert.equal((await storage.get('room')).players.length,1);
+  }finally{storage.put=put;}
+  await host.room.webSocketMessage(admitted.webSocket.peer,JSON.stringify({action:'join',name:'Retry'}));
+  assert.ok(admitted.webSocket.messages.some(x=>x.type==='joined'));
+  assert.equal(host.room.core.s.players.length,2);
+});
