@@ -36,6 +36,27 @@
     fact:[["One person guesses. Everyone else privately invents a plausible wrong answer to the factual question.","Eine Person rät. Alle anderen denken sich geheim plausible falsche Antworten auf die Wissensfrage aus."],["The room shuffles the true answer among the fakes without revealing authors. The guesser picks one.","Der Raum mischt die echte Antwort unter die falschen, ohne die Verfasser zu nennen. Die ratende Person wählt eine."],["Truth chosen: guesser +2. Bluff chosen: each author of that false answer +1. Identical answers are merged; if no false choice remains, the round is skipped. The source appears after reveal.","Echte Antwort: +2 für die ratende Person. Gewählte Lüge: +1 für alle mit derselben falschen Antwort. Gleiche Antworten werden zusammengelegt; ohne falsche Antwort entfällt die Runde. Die Quelle erscheint nach der Auflösung."]]
   };
   const urlJoin=new URLSearchParams(location.search).get('room')?.toUpperCase()||'';
+  const guestInviteKey='chaosclub.28.pendingInvite',protectedLinks=new Map();
+  const validProof=x=>typeof x==='string'&&/^[0-9a-f]{64}$/.test(x);
+  const randomClaim=()=>Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');
+  let pendingGuestInvite=null;
+  try{
+    const saved=JSON.parse(sessionStorage.getItem(guestInviteKey)||'null');
+    if(saved&&saved.code===urlJoin&&validProof(saved.token)&&validProof(saved.claim))pendingGuestInvite=saved;
+  }catch{}
+  const fragment=new URLSearchParams(location.hash.startsWith('#')?location.hash.slice(1):'');
+  const offered=fragment.get('invite');
+  if(offered!==null){
+    // Remove bearer token from address bar before rendering any invitation UI.
+    history.replaceState(null,'',location.pathname+location.search);
+    if(validProof(offered)&&/^[A-HJ-NP-Z2-9]{8}$/.test(urlJoin)){
+      if(!pendingGuestInvite||pendingGuestInvite.token!==offered)
+        pendingGuestInvite={code:urlJoin,token:offered,claim:randomClaim()};
+      sessionStorage.setItem(guestInviteKey,JSON.stringify(pendingGuestInvite));
+    }else{
+      pendingGuestInvite=null;sessionStorage.removeItem(guestInviteKey);
+    }
+  }
   try{seat=JSON.parse(localStorage.getItem(storeKey)||'null');}catch{seat=null;}
   const token=()=>seat&&seat.code&&(urlJoin===''||seat.code===urlJoin);
   function socketUrl(code){const url=new URL('/ws',roomApi);url.searchParams.set('code',code);url.protocol=url.protocol==='https:'?'wss:':'ws:';return url.href;}
@@ -46,10 +67,13 @@
     stopReconnect=false;connecting=true;error='';render();
     // Reserve capacity for the real host and reconnecting seats without putting
     // their credentials in the room URL. Anonymous guests use the bounded pool.
+    const invited=message.action==='join'&&pendingGuestInvite?.code===code&&
+      validProof(pendingGuestInvite.token)&&validProof(pendingGuestInvite.claim);
     const proof=message.action==='create'&&typeof message.createToken==='string'
       ?'cc-create.'+message.createToken
       :message.action==='resume'&&typeof message.id==='string'&&typeof message.token==='string'
-        ?'cc-resume.'+message.id+'.'+message.token:null;
+        ?'cc-resume.'+message.id+'.'+message.token
+        :invited?'cc-invite.'+pendingGuestInvite.token+'.'+pendingGuestInvite.claim:null;
     const ws=proof?new WebSocket(socketUrl(code),['chaos-room.v1',proof]):new WebSocket(socketUrl(code));sock=ws;
     ws.onopen=()=>{if(ws!==sock)return;delay=750;ws.send(JSON.stringify(message));};
     ws.onmessage=(event)=>{
@@ -57,10 +81,18 @@
       let msg;try{msg=JSON.parse(event.data);}catch{return;}
       if(msg.type==='joined'){
         seat={code:msg.code,id:msg.id,token:msg.token};localStorage.setItem(storeKey,JSON.stringify(seat));
+        if(pendingGuestInvite?.code===msg.code){pendingGuestInvite=null;sessionStorage.removeItem(guestInviteKey);}
         const newurl=new URL(location.href);newurl.searchParams.set('room',seat.code);history.replaceState(null,'',newurl.pathname+newurl.search);
         error='';connecting=false;
+      }else if(msg.type==='invite_created'){
+        if(state?.isHost&&state.code&&validProof(msg.token)){
+          protectedLinks.set(msg.id,location.origin+'/room/?room='+state.code+'#invite='+msg.token);
+          error=T('Private invite ready. Copy its link below.','Private Einladung bereit. Kopiere unten den Link.');
+          render();
+        }
       }else if(msg.type==='state'){
         state=msg;connecting=false;error='';
+        if(!state.isHost)protectedLinks.clear();
         if(pendingSubmit && (msg.stage!==pendingSubmit.stage||msg.round!==pendingSubmit.round||msg.mine!=null||msg.myVote!=null))pendingSubmit=null;
         render();
       }else if(msg.type==='error'){
@@ -151,13 +183,30 @@
   }
   function landing(){return `<section class="hero"><div class="eyebrow">${T('Play together on separate phones','Zusammen auf mehreren Handys')}</div><h1>${T('THE SAME PARTY. ONE ROOM.','EINE PARTY. EIN RAUM.')}</h1><p class="sub">${T('Create a room online, share the link, and play on your own phones. No computer server needed.','Erstelle online einen Raum, teile den Link und spielt auf euren eigenen Handys. Kein Computer-Server nötig.')}</p></section><div class="grid"><section class="panel"><h2>${T('Create room','Raum erstellen')}</h2><form data-form="create"><label class="field" for="host-name">${T('Your name','Dein Name')}</label><input class="input" id="host-name" data-draft="host-name" autocomplete="nickname" maxlength="24" required placeholder="${T('Host','Host')}">${btn(T('Create private room','Privaten Raum erstellen'),'create')}</form></section><section class="panel"><h2>${T('Join room','Raum beitreten')}</h2><form data-form="join"><label class="field" for="join-name">${T('Your name','Dein Name')}</label><input id="join-name" class="input" maxlength="24" data-draft="join-name" autocomplete="nickname" required><label class="field" for="join-code">${T('Room code','Raumcode')}</label><input id="join-code" class="input joincode" maxlength="8" data-draft="join-code" value="${esc(urlJoin)}" required>${btn(T('Join','Beitreten'),'join')}</form></section></div>${token()?`<div class="panel">${btn(T('Reconnect to your saved seat','Gespeicherten Platz wiederherstellen'),'resume',{secondary:true})} ${btn(T('Use a different seat','Anderen Platz verwenden'),'forget',{secondary:true})}</div>`:''}`;}
   function people(){return `<div class="panel"><h2>${T('Players','Spieler')} · ${state.players.length}/6</h2>${state.players.map(p=>`<div class="person"><strong>${esc(p.name)}</strong>${p.id===state.host?`<span class="pill">Host</span>`:''}${p.id===state.you?`<span class="pill">${T('You','Du')}</span>`:''}<span class="pill ${p.connected?'good':'bad'}">${p.connected?T('Connected','Verbunden'):T('Offline','Offline')}</span>${state.isHost&&p.id!==state.host&&p.connected?`<button class="chip" data-action="transfer" data-value="${p.id}">${T('Make host','Host übertragen')}</button>`:''}${state.isHost&&state.stage==='lobby'&&!p.connected&&p.id!==state.host?`<button class="chip" data-action="kick" data-value="${p.id}">${T('Remove','Entfernen')}</button>`:''}</div>`).join('')}</div>`;}
+  function invitationPanel(){
+    if(!state?.isHost||state.stage!=='lobby')return '';
+    const issued=state.invitations||[];
+    const remaining=6-state.players.length-issued.length;
+    const rows=issued.map((inv,index)=>{
+      const link=protectedLinks.get(inv.id);
+      const expiry=new Date(inv.expiresAt).toLocaleTimeString(locale==='de'?'de-DE':'en-US',{hour:'2-digit',minute:'2-digit'});
+      return '<div class="person"><strong>'+esc(T('Guest invitation ','Gasteinladung ')+(index+1))+'</strong>'+
+        '<span class="pill">'+esc(expiry)+'</span>'+
+        (link?btn(T('Copy private link','Privaten Link kopieren'),'copy-protected',{value:inv.id,secondary:true}):
+          '<span class="pill">'+esc(T('Link only on issuing device','Link nur auf dem erstellenden Gerät'))+'</span>')+
+        btn(T('Revoke','Widerrufen'),'invite_revoke',{value:inv.id,secondary:true})+'</div>';
+    }).join('');
+    return '<section class="panel"><h2>'+T('Protected guest invitations','Geschützte Gasteinladungen')+'</h2>'+
+      '<p class="sub">'+T('One private link per guest, even when anonymous slots are full. Share privately.','Ein privater Link pro Gast, auch bei vollen anonymen Plätzen. Nur privat teilen.')+'</p>'+
+      rows+'<div class="actions">'+btn(T('Create private invitation','Private Einladung erstellen'),'invite_issue',{disabled:remaining<=0})+'</div></section>';
+  }
   function settings(){return `<section class="panel"><h2>${T('Set up your game','Spiel vorbereiten')}</h2><form data-form="start"><label class="field" for="room-game">${T('Game','Spiel')}</label><select id="room-game" class="input" data-draft="game"><option value="social">Social Radar</option><option value="comedy">Comedy Battle</option><option value="bluff">Bluff Club</option></select><label class="field" for="room-mode">${T('Mode','Modus')}</label><select id="room-mode" class="input" data-draft="mode"></select><label class="field" for="room-language">${T('Game content language','Sprache der Spielinhalte')}</label><select id="room-language" class="input" data-draft="language"><option value="en">English</option><option value="de">Deutsch</option></select><label class="field" for="room-duration">${T('Session','Spiellänge')}</label><select id="room-duration" class="input" data-draft="duration"><option value="quick">${T('Quick','Kurz')}</option><option value="standard" selected>${T('Standard','Standard')}</option><option value="long">${T('Long','Lang')}</option></select><details class="setup-guide"><summary>${T('Rules for this game','Regeln für dieses Spiel')}</summary><ol class="step" id="setup-rules"></ol></details><div class="actions">${btn(T('Start with 4–6 connected players','Mit 4–6 verbundenen Personen starten'),'start',{disabled:state.players.length<4||state.players.some(x=>!x.connected)})}</div></form></section>`;}
   function game(){
     const invite=(`${location.origin}/room/?room=${state.code}`);
     let inner=state.stage==='lobby'
       ?`<section class="hero"><div class="row"><div><div class="eyebrow">${T('Private party room','Privater Partyraum')}</div><div class="roomcode">${esc(state.code)}</div></div><span class="pill">${T('Share this code with friends','Code mit Freunden teilen')}</span></div><div class="actions">${btn(T('Copy invite link','Einladungslink kopieren'),'copy',{secondary:true})}</div><p class="sub" style="overflow-wrap:anywhere;font-size:.85rem">${esc(invite)}</p><canvas class="room-qr" width="156" height="156" aria-label="${T('Scannable room invitation QR code','Scanbarer QR-Code für die Raumeinladung')}"></canvas></section>`
       :`<div class="room-mini"><span>${T('Room','Raum')} <b>${esc(state.code)}</b></span><button class="chip" data-action="copy">${T('Invite','Einladen')}</button></div>`;
-    if(state.stage==='lobby')return inner+people()+(state.isHost?settings():`<div class="panel">${T('Waiting for host to start.','Warten, bis der Host startet.')}</div>`);
+    if(state.stage==='lobby')return inner+people()+(state.isHost?invitationPanel()+settings():`<div class="panel">${T('Waiting for host to start.','Warten, bis der Host startet.')}</div>`);
     inner+=`<div class="panel"><div class="row"><span class="round-tag">${esc((titleGame[state.game]||[])[locale==='de'?1:0]||state.game)} · ${esc(state.stage==='end'?T('Finished','Beendet'):`${T('Round','Runde')} ${state.round+1}/${state.total}`)}</span><span class="pill">${esc(state.mode==='mixed'?T('Mixed','Gemischt'):T(...(types[state.mode]||[state.mode,state.mode])))}</span></div></div>`;
     if(state.stage==='end')return inner+scoreboard()+`<div class="panel"><div class="big">${T('Session complete','Spiel beendet')}</div><p>${state.completed} ${T('played','gespielt')} · ${state.skipped} ${T('skipped','übersprungen')}</p>${state.isHost?btn(T('Choose another game','Anderes Spiel wählen'),'lobby'):''}</div>`;
     inner+=current()+`<details class="panel"><summary>${T('How to play this round','Spielregeln dieser Runde')}</summary><ol class="step">${(rules[state.item.type]||[]).map(([en,de])=>`<li>${esc(T(en,de))}</li>`).join('')}</ol><p class="step">${T('Quick / Standard / Long changes the round count, not the voting rules. You may skip a round without penalty.','Kurz / Standard / Lang ändert die Rundenzahl, nicht die Regeln. Runden dürfen ohne Strafe übersprungen werden.')}</p></details>`;
@@ -267,11 +316,23 @@
     const act=el.dataset.action,v=el.dataset.value;
     if(act==='language'){locale=locale==='en'?'de':'en';localStorage.setItem(localeKey,locale);render();return;}
     if(act==='copy'){const invite=`${location.origin}/room/?room=${state.code}`;try{await navigator.clipboard.writeText(invite);error=T('Invite copied.','Einladung kopiert.');}catch{error=T('Copy this invite URL: ','Einladungslink zum Kopieren: ')+invite;}render();return;}
+    if(act==='copy-protected'){
+      const link=protectedLinks.get(v);
+      if(link){try{await navigator.clipboard.writeText(link);error=T('Private invite copied.','Private Einladung kopiert.');}
+        catch{error=T('Copy this private invitation: ','Diese private Einladung kopieren: ')+link;}}
+      render();return;
+    }
     if(act==='resume'){connect({action:'resume',...seat});return;}
     if(act==='forget'){reconnectDraft=null;pendingSubmit=null;stopReconnect=true;if(sock)sock.close();sock=null;seat=null;state=null;localStorage.removeItem(storeKey);error='';render();return;}
     if(act==='create'||act==='join')return;
     if(!state)return;
-    if(act==='choice')send({action:'submit',round:state.round,choice:Number(v)});
+    if(act==='invite_issue')send({action:'invite_issue'});
+    else if(act==='invite_revoke'){
+      if(confirm(T('Revoke unused invitation?','Ungenutzte Einladung widerrufen?'))){
+        protectedLinks.delete(v);send({action:'invite_revoke',id:v});
+      }
+    }
+    else if(act==='choice')send({action:'submit',round:state.round,choice:Number(v)});
     else if(act==='truth')send({action:'submit',round:state.round,truth:v==='true'});
     else if(act==='vote')send({action:'submit',round:state.round,choice:Number(v)});
     else if(['skip','finish'].includes(act)){
