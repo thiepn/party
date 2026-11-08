@@ -153,3 +153,33 @@ jobs:
           if [ "$STATUS" != 201 ]; then echo "Local development origin unavailable ($STATUS)"; cat "$RUNNER_TEMP/party-browser-workerd.log"; exit 1; fi
           if ! node test/browser-admission-smoke.mjs; then cat "$RUNNER_TEMP/party-browser-workerd.log"; exit 1; fi
           if ! CHAOS_BROWSER=webkit node test/browser-admission-smoke.mjs; then cat "$RUNNER_TEMP/party-browser-workerd.log"; exit 1; fi
+
+  local-adversarial-resources:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    defaults:
+      run:
+        working-directory: server/cloudflare
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned local Wrangler and WebSocket probe client
+        run: npm install --no-save --no-package-lock --no-audit --no-fund ws@8.18.3
+      - name: Measure stalled close connections and shared-IP six-seat recovery in isolated workerd
+        run: |
+          set -euo pipefail
+          export WRANGLER_SEND_METRICS=false
+          setsid npx --no-install wrangler dev --local --ip 127.0.0.1 --port 8787 --persist-to "$RUNNER_TEMP/party-adversarial-state" > "$RUNNER_TEMP/party-adversarial-workerd.log" 2>&1 &
+          SERVER_PID=$!
+          export WRANGLER_PID="$SERVER_PID"
+          trap 'kill -TERM -- "-$SERVER_PID" 2>/dev/null || kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          READY=0
+          for attempt in $(seq 1 50); do
+            if curl --fail --silent --max-time 1 http://127.0.0.1:8787/health >/dev/null; then READY=1; break; fi
+            sleep 1
+          done
+          if [ "$READY" != 1 ]; then cat "$RUNNER_TEMP/party-adversarial-workerd.log"; exit 1; fi
+          if ! node test/adversarial-resource-worker-smoke.mjs; then cat "$RUNNER_TEMP/party-adversarial-workerd.log"; exit 1; fi
