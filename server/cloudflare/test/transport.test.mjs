@@ -367,6 +367,7 @@ test('invitation protects a first-time guest behind five anonymous sockets while
   assert.equal(host.room.core.s.players.length,2);
   assert.equal(host.room.core.view(first.id).players.length,2);
   assert.ok(!JSON.stringify(pop(host,'state')).includes(inv.token),'other players never see invitation secret');
+  for(const c of flood)c.server.close();
   const manual=await connect(env,room.code);
   await manual.send({action:'join',name:'Manual guest'});
   assert.equal(pop(manual,'joined').code,room.code,'manual code remains supported when unreserved seat exists');

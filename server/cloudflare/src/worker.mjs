@@ -4,6 +4,12 @@ import {RoomCore,RoomError,safeString} from './room-core.mjs';
 const ROOM_RE=/^[A-HJ-NP-Z2-9]{8}$/;const CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const TTL=2*60*60*1000,MAX_AGE=12*60*60*1000,FAILOVER=15*1000;
 const PENDING_TTL=10_000,PENDING_LIMIT=5,CONNECTION_LIMIT=16;
+const INVITE_TTL=10*60_000,INVITE_RECOVERY_TTL=2*60_000;
+const SECRET_HEX=/^[0-9a-f]{64}$/;
+async function digestHex(value){
+  const bytes=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)));
+  return [...bytes].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 class RoomWriteError extends Error {}
 function randomCode(){const bytes=new Uint8Array(8);crypto.getRandomValues(bytes);return [...bytes].map(x=>CHARS[x%CHARS.length]).join('');}
 function secret(){const v=new Uint8Array(32);crypto.getRandomValues(v);return [...v].map(x=>x.toString(16).padStart(2,'0')).join('');}
@@ -30,6 +36,7 @@ export default {async fetch(req,env){const url=new URL(req.url);if(url.pathname=
 }};
 export class PartyRoom {
   constructor(ctx,env){this.ctx=ctx;this.env=env;this.core=null;this.createToken=null;this.createdAt=0;this.facts=null;
+    this.rosterQueue=Promise.resolve();
     this.ready=ctx.blockConcurrencyWhile(async()=>{const raw=await ctx.storage.get('room'),init=await ctx.storage.get('init');if(raw){this.core=new RoomCore(raw.code,{},raw);this.createdAt=raw.createdAt||Date.now();this.createToken=raw.createToken||null;this.restoreConnections();
       // After a crash/hibernation a host socket can be gone without its close
       // handler having persisted the failover timestamp. Restore the deadline.
@@ -40,6 +47,41 @@ export class PartyRoom {
   restoreConnections(){if(!this.core)return;const s=this.core.s;for(const p of s.players)p.connected=false;
     for(const ws of this.ctx.getWebSockets()){const a=ws.deserializeAttachment();if(!a?.pid||!a?.nonce)continue;const p=this.core.player(a.pid);if(p&&p.nonce===a.nonce)p.connected=true;}
   }
+  // Serialize roster/invitation mutations, not all gameplay or private R2 fetches.
+  async rosterLocked(task){
+    const previous=this.rosterQueue;
+    let release;
+    this.rosterQueue=new Promise(resolve=>{release=resolve;});
+    await previous;
+    try{return await task();}finally{release();}
+  }
+  invitations(){
+    if(!Array.isArray(this.core.s.invitations))this.core.s.invitations=[];
+    return this.core.s.invitations;
+  }
+  cleanInvitations(now=Date.now()){
+    this.core.s.invitations=this.invitations().filter(i=>i.expiresAt>now&&(!i.playerId||i.redeemedAt+INVITE_RECOVERY_TTL>now));
+  }
+  unredeemed(now=Date.now()){
+    return this.invitations().filter(i=>!i.playerId&&i.expiresAt>now);
+  }
+  invalidateUnredeemed(){
+    this.core.s.invitations=this.invitations().filter(i=>!!i.playerId);
+  }
+  stateFor(pid){
+    const result=this.core.view(pid);
+    if(pid===this.core.s.host&&this.core.s.stage==='lobby')
+      result.invitations=this.unredeemed().map(i=>({id:i.id,expiresAt:i.expiresAt}));
+    return result;
+  }
+  async sendCommittedState(){
+    this.core.tick();
+    await this.save();
+    for(const p of this.core.s.players)if(p.connected){
+      const ws=this.wsFor(p);
+      if(ws)this.send(ws,this.stateFor(p.id));
+    }
+  }
   async getContent(){if(this.content)return this.content;const base=structuredClone(prompts);const file=await this.env.FACTS.get('chaos-club/room-facts.json');if(!file)throw new RoomError('Private Fact Trap content not configured.');const facts=await file.json();for(const x of base.bluff.fact){const f=facts[x.factId];if(!f?.answer?.en||!f?.answer?.de||!f?.source)throw new RoomError('Incomplete private facts.');x.answer=f.answer;x.source=f.source;}this.content=base;return base;}
   async save(){if(!this.core)return;const s=this.core.s;s.createdAt=this.createdAt;s.createToken=this.createToken;try{await this.schedule();await this.ctx.storage.put('room',s);}catch{throw new RoomWriteError('Room state could not be persisted.');}}
   async schedule(){const s=this.core?.s;if(!s)return;const connected=s.players.some(p=>p.connected);let due=this.createdAt+MAX_AGE;
@@ -48,6 +90,7 @@ export class PartyRoom {
     if(!connected)due=Math.min(due,s.modifiedAt+TTL);
     if(connected&&s.hostDisconnectedAt)due=Math.min(due,s.hostDisconnectedAt+FAILOVER);
     const now=Date.now();
+    for(const inv of this.invitations())if(inv.expiresAt>now&&!inv.playerId)due=Math.min(due,inv.expiresAt);
     for(const ws of this.ctx.getWebSockets()){
       const a=ws.deserializeAttachment();
       if(!a?.pid&&Number.isFinite(a?.openedAt)&&a.openedAt+PENDING_TTL>now)
@@ -62,55 +105,143 @@ export class PartyRoom {
       // gameplay actions still validate the credential and rotate it on resume.
       const offered=(req.headers.get('Sec-WebSocket-Protocol')||'').split(',').map(s=>s.trim());
       const negotiated=offered.includes('chaos-room.v1');
-      const claimed=offered.find(s=>s.startsWith('cc-create.')||s.startsWith('cc-resume.'));
-      let priority=false;
+      const claims=offered.filter(s=>s.startsWith('cc-create.')||s.startsWith('cc-resume.')||s.startsWith('cc-invite.'));
+      if(claims.length>1)return new Response('Ambiguous admission proof',{status:403});
+      const claimed=claims[0];
+      let priority=false,kind='anonymous',inviteHash=null,inviteClaimHash=null;
       if(claimed){
         if(!negotiated)return new Response('Invalid admission proof',{status:403});
         if(claimed.startsWith('cc-create.')){
           const token=claimed.slice('cc-create.'.length);
           priority=!!(this.createToken&&token===this.createToken&&!this.core.s.host);
-        }else{
-          const parsed=/^cc-resume\.([0-9a-f-]{36})\.([0-9a-f]{64})$/.exec(claimed);
+          kind='seat';
+        }else if(claimed.startsWith('cc-resume.')){
+          const parsed=/^cc-resume\\.([0-9a-f-]{36})\\.([0-9a-f]{64})$/.exec(claimed);
           priority=!!(parsed&&this.core.player(parsed[1])?.token===parsed[2]);
+          kind='seat';
+        }else{
+          const parsed=/^cc-invite\\.([0-9a-f]{64})\\.([0-9a-f]{64})$/.exec(claimed);
+          if(parsed){
+            const hash=await digestHex(parsed[1]),claimHash=await digestHex(parsed[2]);
+            const record=this.invitations().find(i=>i.hash===hash&&i.expiresAt>Date.now());
+            if(record&&(!record.playerId||(record.claimHash===claimHash&&Date.now()<record.redeemedAt+INVITE_RECOVERY_TTL))){
+              priority=true;kind='invite';inviteHash=hash;inviteClaimHash=claimHash;
+            }
+          }
         }
         if(!priority)return new Response('Invalid admission proof',{status:403});
       }
-      // getWebSockets() may retain CLOSING handshakes without a reciprocal Close.
-      // Count only OPEN sockets toward active admission limits; these stale
-      // transports must not block legitimate new guests or reconnects.
-      const sockets=this.ctx.getWebSockets().filter(ws=>ws.readyState===1);
-      const unverified=sockets.filter(ws=>{const a=ws.deserializeAttachment();return !a?.pid&&!a?.priority;}).length;
-      if((!priority&&unverified>=PENDING_LIMIT)||sockets.length>=CONNECTION_LIMIT)
+      // CLOSED and CLOSING transports do not consume OPEN admission slots.
+      // Keep one slot free for authenticated create/resume, and at hard capacity
+      // only displace an anonymous, unbound handshake (never an occupied seat).
+      let sockets=this.ctx.getWebSockets().filter(ws=>ws.readyState===1);
+      if(priority&&sockets.length>=CONNECTION_LIMIT){
+        const victim=sockets.find(ws=>{const a=ws.deserializeAttachment();return !a?.pid&&!a?.priority;})||
+          (kind==='seat'?sockets.find(ws=>{const a=ws.deserializeAttachment();return !a?.pid&&a?.kind==='invite';}):null);
+        if(victim)try{victim.close(4009,'Reserved player admission');}catch{}
+        sockets=this.ctx.getWebSockets().filter(ws=>ws.readyState===1);
+      }
+      const anonymous=sockets.filter(ws=>{const a=ws.deserializeAttachment();return !a?.pid&&!a?.priority;}).length;
+      if((!priority&&anonymous>=PENDING_LIMIT)||sockets.length>=CONNECTION_LIMIT||
+        (kind!=='seat'&&sockets.length>=CONNECTION_LIMIT-1))
         return new Response('Room connections full',{status:429});
+      if(kind==='invite'&&sockets.some(ws=>{
+        const a=ws.deserializeAttachment();
+        return !a?.pid&&a?.inviteHash===inviteHash;
+      }))return new Response('Invitation connection pending',{status:429});
       const pair=new WebSocketPair(),[client,server]=Object.values(pair);
       this.ctx.acceptWebSocket(server);
-      server.serializeAttachment({pid:null,nonce:null,priority,openedAt:Date.now()});
+      server.serializeAttachment({pid:null,nonce:null,priority,kind,inviteHash,inviteClaimHash,openedAt:Date.now()});
       await this.schedule();
       return new Response(null,{status:101,webSocket:client,...(negotiated?{headers:{'Sec-WebSocket-Protocol':'chaos-room.v1'}}:{})});}
     return new Response('Not found',{status:404});
   }
   wsFor(p){return this.ctx.getWebSockets().find(ws=>{const a=ws.deserializeAttachment();return a?.pid===p.id&&a?.nonce===p.nonce;});}
   send(ws,data){try{ws.send(JSON.stringify(data));}catch{}}
-  async broadcast(){this.core.tick();await this.save();for(const p of this.core.s.players){if(p.connected){const ws=this.wsFor(p);if(ws)this.send(ws,this.core.view(p.id));}}}
-  async webSocketMessage(ws,message){await this.ready;if(typeof message!=='string'||message.length>8192){this.send(ws,{type:'error',message:'Invalid message size.'});return;}
+  async broadcast(){this.core.tick();await this.save();for(const p of this.core.s.players){if(p.connected){const ws=this.wsFor(p);if(ws)this.send(ws,this.stateFor(p.id));}}}
+  async webSocketMessage(ws,message){
+    let action;
+    if(typeof message==='string')try{action=JSON.parse(message)?.action;}catch{}
+    if(['create','join','resume','invite_issue','invite_revoke'].includes(action))
+      return this.rosterLocked(()=>this.handleMessage(ws,message));
+    return this.handleMessage(ws,message);
+  }
+  async handleMessage(ws,message){await this.ready;if(typeof message!=='string'||message.length>8192){this.send(ws,{type:'error',message:'Invalid message size.'});return;}
     let rollback=null;
     try{const data=JSON.parse(message);if(!data||typeof data!=='object'||Array.isArray(data))throw new RoomError('Invalid message.');const s=this.core.s,old=ws.deserializeAttachment()||{};const action=data.action;
       rollback={state:structuredClone(s),createToken:this.createToken,attachment:structuredClone(old)};
       if(!old.pid){if(action==='create'){if(s.players.length||this.createToken===null||data.createToken!==this.createToken)throw new RoomError('Invalid room creation credential.');const name=safeString(data.name,24)||'Host',id=crypto.randomUUID(),token=secret(),nonce=crypto.randomUUID();s.players.push({id,token,name,connected:true,nonce});s.host=id;this.createToken=null;ws.serializeAttachment({pid:id,nonce});await this.save();this.send(ws,{type:'joined',code:s.code,id,token});}
-        else if(action==='join'){if(!s.host)throw new RoomError('Wait for the host to create this room.');if(s.stage!=='lobby')throw new RoomError('This session has started. Reconnect with your saved seat.');if(s.players.length>=6)throw new RoomError('Room is full (maximum 6).');const name=safeString(data.name,24);if(!name)throw new RoomError('Enter a name.');const id=crypto.randomUUID(),token=secret(),nonce=crypto.randomUUID();s.players.push({id,token,name,connected:true,nonce});ws.serializeAttachment({pid:id,nonce});await this.save();this.send(ws,{type:'joined',code:s.code,id,token});}
+        else if(action==='join'){
+          if(!s.host)throw new RoomError('Wait for the host to create this room.');
+          const name=safeString(data.name,24);
+          if(!name)throw new RoomError('Enter a name.');
+          const reserved=!!old.inviteHash;
+          const invited=reserved?this.invitations().find(i=>i.hash===old.inviteHash&&i.expiresAt>Date.now()):null;
+          if(reserved&&(!invited||invited.playerId&&(
+            invited.claimHash!==old.inviteClaimHash||Date.now()>=invited.redeemedAt+INVITE_RECOVERY_TTL
+          )))throw new RoomError('Invitation expired, revoked or already redeemed.');
+          if(invited?.playerId){
+            // Same claimant recovers a seat if its first durable join reply was lost.
+            const seat=this.core.player(invited.playerId);
+            if(!seat)throw new RoomError('Invitation seat unavailable.');
+            const previous=this.wsFor(seat),nonce=crypto.randomUUID();
+            seat.connected=true;seat.nonce=nonce;
+            ws.serializeAttachment({pid:seat.id,nonce});
+            await this.save();
+            if(previous&&previous!==ws)try{previous.close(4001,'Session recovered');}catch{}
+            this.send(ws,{type:'joined',code:s.code,id:seat.id,token:seat.token});
+          }else{
+            if(s.stage!=='lobby')throw new RoomError('This session has started. Reconnect with your saved seat.');
+            if(s.players.length>=6)throw new RoomError('Room is full (maximum 6).');
+            const pending=this.unredeemed().length;
+            if(!invited&&s.players.length+pending>=6)
+              throw new RoomError('Seats reserved for outstanding invitations.');
+            const id=crypto.randomUUID(),token=secret(),nonce=crypto.randomUUID();
+            s.players.push({id,token,name,connected:true,nonce});
+            if(invited){invited.playerId=id;invited.claimHash=old.inviteClaimHash;invited.redeemedAt=Date.now();}
+            ws.serializeAttachment({pid:id,nonce});
+            await this.save();
+            this.send(ws,{type:'joined',code:s.code,id,token});
+          }
+        }
         else if(action==='resume'){const p=this.core.player(data.id);if(!p||typeof data.token!=='string'||data.token!==p.token)throw new RoomError('Invalid reconnect credentials.');const previous=this.wsFor(p),nonce=crypto.randomUUID();p.token=secret();p.nonce=nonce;p.connected=true;if(s.host===p.id)s.hostDisconnectedAt=null;ws.serializeAttachment({pid:p.id,nonce});await this.save();if(previous&&previous!==ws)try{previous.close(4001,'Session moved');}catch{}this.send(ws,{type:'joined',code:s.code,id:p.id,token:p.token});}
-        else throw new RoomError('Create, join or resume first.');if(s.hostDisconnectedAt&&Date.now()>=s.hostDisconnectedAt+FAILOVER){const oldHost=this.core.player(s.host);if(oldHost&&!oldHost.connected){const replacement=s.players.find(p=>p.connected);if(replacement){s.host=replacement.id;s.hostDisconnectedAt=null;}}}await this.broadcast();return;
+        else throw new RoomError('Create, join or resume first.');if(s.hostDisconnectedAt&&Date.now()>=s.hostDisconnectedAt+FAILOVER){const oldHost=this.core.player(s.host);if(oldHost&&!oldHost.connected){const replacement=s.players.find(p=>p.connected);if(replacement){this.invalidateUnredeemed();s.host=replacement.id;s.hostDisconnectedAt=null;}}}await this.broadcast();return;
       }
       const p=this.core.player(old.pid);if(!p||p.nonce!==old.nonce||!p.connected)throw new RoomError('Connection replaced.');
-      if(['start','next','skip','finish','open_vote','lobby','kick','transfer'].includes(action))this.core.hostCheck(p.id);
-      if(action==='start'){this.core.content=await this.getContent();rollback.state=structuredClone(this.core.s);rollback.createToken=this.createToken;this.core.start(p.id,data.game,data.mode,data.duration,data.language||'en');}
+      if(['start','next','skip','finish','open_vote','lobby','kick','transfer','invite_issue','invite_revoke'].includes(action))this.core.hostCheck(p.id);
+      if(action==='invite_issue'){
+        if(s.stage!=='lobby')throw new RoomError('Invitations are available in the lobby only.');
+        this.cleanInvitations();
+        if(this.unredeemed().length>=5||s.players.length+this.unredeemed().length>=6)
+          throw new RoomError('No invitation capacity remains.');
+        const inviteToken=secret(),hash=await digestHex(inviteToken);
+        // Revalidate after asynchronous hashing; host or stage may have changed.
+        this.core.hostCheck(p.id);
+        if(s.stage!=='lobby'||s.players.length+this.unredeemed().length>=6)
+          throw new RoomError('No invitation capacity remains.');
+        const record={id:crypto.randomUUID(),hash,issuedBy:p.id,expiresAt:Date.now()+INVITE_TTL,
+          playerId:null,claimHash:null,redeemedAt:null};
+        this.invitations().push(record);
+        await this.sendCommittedState();
+        this.send(ws,{type:'invite_created',id:record.id,token:inviteToken,expiresAt:record.expiresAt});
+        return;
+      }
+      if(action==='invite_revoke'){
+        if(s.stage!=='lobby')throw new RoomError('Invitations are available in the lobby only.');
+        const before=this.invitations().length;
+        s.invitations=this.invitations().filter(i=>i.id!==data.id||!!i.playerId);
+        if(before===s.invitations.length)throw new RoomError('Invitation is no longer revocable.');
+        await this.sendCommittedState();
+        return;
+      }
+      if(action==='start'){this.core.content=await this.getContent();rollback.state=structuredClone(this.core.s);rollback.createToken=this.createToken;this.core.start(p.id,data.game,data.mode,data.duration,data.language||'en');this.invalidateUnredeemed();}
       else if(action==='submit'){if(data.round!==s.round)throw new RoomError('Old round. Refresh your screen.');this.core.submit(p.id,data);}
       else if(action==='open_vote')this.core.openLive(p.id);
       else if(action==='next')this.core.next(p.id);
       else if(action==='skip')this.core.skip(p.id);
       else if(action==='finish')this.core.finish(p.id);
       else if(action==='lobby')this.core.lobby(p.id);
-      else if(action==='transfer'){const t=this.core.player(data.target);if(!t?.connected)throw new RoomError('Select a connected player.');s.host=t.id;s.hostDisconnectedAt=null;}
+      else if(action==='transfer'){const t=this.core.player(data.target);if(!t?.connected)throw new RoomError('Select a connected player.');if(s.host!==t.id)this.invalidateUnredeemed();s.host=t.id;s.hostDisconnectedAt=null;}
       else if(action==='kick'){if(s.stage!=='lobby')throw new RoomError('Seats may be removed only in the lobby.');const t=this.core.player(data.target);if(!t||t.connected||t.id===s.host)throw new RoomError('Only disconnected non-host seats may be removed.');s.players.splice(s.players.indexOf(t),1);}
       else if(action==='ping'){return;}
       else throw new RoomError('Invalid action.');
@@ -139,6 +270,8 @@ export class PartyRoom {
         try{ws.close(4008,'Join timeout');}catch{}
     }
     if(now>this.createdAt+MAX_AGE||(!s.players.some(p=>p.connected)&&now>s.modifiedAt+TTL)){for(const ws of this.ctx.getWebSockets())try{ws.close(4000,'Room expired');}catch{}await this.ctx.storage.deleteAll();this.core=null;return;}
-    if(s.hostDisconnectedAt&&now>=s.hostDisconnectedAt+FAILOVER){const old=this.core.player(s.host);if(old&&!old.connected){const replacement=s.players.find(p=>p.connected);if(replacement){s.host=replacement.id;s.hostDisconnectedAt=null;await this.broadcast();return;}}}
+    if(s.hostDisconnectedAt&&now>=s.hostDisconnectedAt+FAILOVER){const old=this.core.player(s.host);if(old&&!old.connected){const replacement=s.players.find(p=>p.connected);if(replacement){this.invalidateUnredeemed();s.host=replacement.id;s.hostDisconnectedAt=null;await this.broadcast();return;}}}
+    const before=this.invitations().length;this.cleanInvitations(now);
+    if(this.invitations().length!==before){await this.broadcast();return;}
     await this.schedule();}
 }
