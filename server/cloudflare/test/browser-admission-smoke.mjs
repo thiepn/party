@@ -1,10 +1,12 @@
 // Browser-only integration test against local public/room and local Wrangler.
 // All URLs are loopback; do not use production endpoints or production data.
 import assert from 'node:assert/strict';
-import {chromium} from 'playwright-core';
+import {chromium,webkit} from 'playwright-core';
 
 const origin='http://127.0.0.1:8080',errors=[];
-const browser=await chromium.launch({channel:'chrome',headless:true,args:['--no-sandbox']});
+const engine=process.env.CHAOS_BROWSER==='webkit'?'webkit':'chromium';
+const browser=await (engine==='webkit'?webkit:chromium).launch(engine==='webkit'
+  ?{headless:true}:{channel:'chrome',headless:true,args:['--no-sandbox']});
 let hostContext,guestContext;
 const extraContexts=[];
 try{
@@ -70,7 +72,7 @@ try{
   assert.deepEqual(scores,{'Browser Host':1,'Browser Guest':1,'Browser 2':1,'Browser 3':0},
     'three-vote browser majority must be awarded exactly once');
   assert.equal(errors.length,0,'browser must not throw during creation/join/reconnect: '+errors.join('; '));
-  console.log('LOCAL_CHROMIUM_BROWSER_ADMISSION_PASS',JSON.stringify({mobileHost:true,desktopGuest:true,players:4,roomCodeValid:true,reconnectTokenRotated:true,parallelSubmissions:true,majorityScoring:true,pageErrors:0}));
+  console.log('LOCAL_'+engine.toUpperCase()+'_BROWSER_ADMISSION_PASS',JSON.stringify({engine,mobileHost:true,desktopGuest:true,players:4,roomCodeValid:true,reconnectTokenRotated:true,parallelSubmissions:true,majorityScoring:true,pageErrors:0}));
 }finally{
   for(const ctx of extraContexts)await ctx.close();
   await guestContext?.close();
