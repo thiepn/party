@@ -116,11 +116,11 @@ export class PartyRoom {
           priority=!!(this.createToken&&token===this.createToken&&!this.core.s.host);
           kind='seat';
         }else if(claimed.startsWith('cc-resume.')){
-          const parsed=/^cc-resume\\.([0-9a-f-]{36})\\.([0-9a-f]{64})$/.exec(claimed);
+          const parsed=/^cc-resume\.([0-9a-f-]{36})\.([0-9a-f]{64})$/.exec(claimed);
           priority=!!(parsed&&this.core.player(parsed[1])?.token===parsed[2]);
           kind='seat';
         }else{
-          const parsed=/^cc-invite\\.([0-9a-f]{64})\\.([0-9a-f]{64})$/.exec(claimed);
+          const parsed=/^cc-invite\.([0-9a-f]{64})\.([0-9a-f]{64})$/.exec(claimed);
           if(parsed){
             const hash=await digestHex(parsed[1]),claimHash=await digestHex(parsed[2]);
             const record=this.invitations().find(i=>i.hash===hash&&i.expiresAt>Date.now());
