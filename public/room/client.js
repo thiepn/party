@@ -44,7 +44,7 @@
     const saved=JSON.parse(sessionStorage.getItem(guestInviteKey)||'null');
     if(saved&&saved.code===urlJoin&&validProof(saved.token)&&validProof(saved.claim))pendingGuestInvite=saved;
   }catch{}
-  const fragment=new URLSearchParams(location.hash.startsWith('#')?location.hash.slice(1):'');
+  const fragment=new URLSearchParams(typeof location.hash==='string'&&location.hash.startsWith('#')?location.hash.slice(1):'');
   const offered=fragment.get('invite');
   if(offered!==null){
     // Remove bearer token from address bar before rendering any invitation UI.
