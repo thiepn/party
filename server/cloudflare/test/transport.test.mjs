@@ -280,3 +280,52 @@ test('closing idle guest sockets must not exhaust admission across repeated wave
   assert.equal(resumed.status,101,'known host must recover even after four closing guest waves');
   assert.equal(room.core.s.players.length,1);
 });
+
+test('overlapping guest join survives failed persistence after delayed private R2 start',async()=>{
+  const env=new TestEnv(),reservation=await init(env),clients=[];
+  for(let i=0;i<4;i++){
+    const c=await connect(env,reservation.code);
+    await c.send(i?{action:'join',name:'P'+i}:{action:'create',name:'Host',createToken:reservation.createToken});
+    clients.push(c);
+  }
+  const room=clients[0].room,store=room.ctx.storage;
+  const savedBefore=await store.get('room');
+  const originalGet=env.FACTS.get,originalPut=store.put.bind(store);
+  let signal,release;
+  const requested=new Promise(resolve=>{signal=resolve;});
+  let interruptedStart;
+  try{
+    env.FACTS.get=async()=>{
+      signal();
+      return await new Promise(resolve=>{release=()=>resolve({json:async()=>privateData});});
+    };
+    interruptedStart=clients[0].send({action:'start',game:'bluff',mode:'fact',duration:'quick'});
+    await requested;
+    const guest=await connect(env,reservation.code);
+    await guest.send({action:'join',name:'Concurrent guest'});
+    const guestSeat=pop(guest,'joined');
+    assert.equal(room.core.s.players.length,5);
+    assert.equal((await store.get('room')).players.length,5,'guest must be committed before R2 returns');
+    assert.equal(room.core.s.stage,'lobby','delayed start must not expose a partially running game');
+    store.put=async()=>{throw new Error('INJECTED_START_STORAGE_FAILURE');};
+    release();await interruptedStart;
+    assert.equal(pop(clients[0],'error').message,'Invalid room operation.');
+    assert.equal(room.core.s.stage,'lobby');
+    assert.equal(room.core.s.players.length,5,'failed start must not discard concurrent guest');
+    assert.equal(room.core.player(guestSeat.id).token,guestSeat.token,'guest credential must remain intact');
+    const committed=await store.get('room');
+    assert.equal(committed.stage,'lobby');
+    assert.equal(committed.players.length,5);
+    assert.equal(committed.players[4].token,guestSeat.token,'persisted new seat must not be rolled back');
+    assert.deepEqual(committed.players.slice(0,4).map(p=>p.points),savedBefore.players.map(p=>p.points));
+    assert.equal(guest.cli.messages.filter(m=>m.type==='state'&&m.stage==='prepare').length,0,
+      'no unpersisted game state may be broadcast to new guest');
+  }finally{
+    env.FACTS.get=originalGet;store.put=originalPut;
+    if(release)release();
+    if(interruptedStart)await interruptedStart;
+  }
+  await clients[0].send({action:'start',game:'bluff',mode:'fact',duration:'quick'});
+  assert.equal(pop(clients[0],'state').stage,'prepare','start retry after storage recovery must succeed');
+  assert.equal(room.core.s.players.length,5);
+});
