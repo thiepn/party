@@ -34,6 +34,13 @@ try{
   await lobby(host,1);
   const hostSeat=await host.evaluate(()=>JSON.parse(localStorage.getItem('chaosclub.28.seat')));
   assert.equal(hostSeat.code,code);
+  // Expired/invalid bearer links must offer a safe manual-join fallback.
+  const invalidPage=await guestContext.newPage();
+  await invalidPage.goto(origin+'/room/?room='+code+'#invite='+'f'.repeat(64),{waitUntil:'load'});
+  assert.equal(await invalidPage.evaluate(()=>location.hash),'');
+  await invalidPage.locator('[data-action="discard-invite"]').click();
+  assert.equal(await invalidPage.evaluate(()=>sessionStorage.getItem('chaosclub.28.pendingInvite')),null);
+  await invalidPage.close();
   await host.locator('[data-action="invite_issue"]').click();
   await host.locator('[data-action="copy-protected"]').waitFor({timeout:12000});
   await host.locator('[data-action="copy-protected"]').click();

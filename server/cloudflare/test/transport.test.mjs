@@ -504,3 +504,26 @@ test('host failover and gameplay start revoke unredeemed invitations without tou
   assert.equal((await invitedSocket(env,room,replacement,claimString(57))).status,403,
     'starting a game invalidates outstanding unredeemed invitations');
 });
+
+test('same-claim recovery clears host failover deadline after invitation holder becomes host',async()=>{
+  const {env,room,host}=await makeHostForInvites(),inv=await issued(host),claim=claimString(71);
+  const first=await invitedSocket(env,room,inv,claim);
+  assert.equal(first.status,101);
+  await host.room.webSocketMessage(first.webSocket.peer,JSON.stringify({action:'join',name:'Future host'}));
+  const seat=first.webSocket.messages.find(m=>m.type==='joined');
+  assert.ok(seat?.id);
+  await host.send({action:'transfer',target:seat.id});
+  assert.equal(host.room.core.s.host,seat.id);
+  first.webSocket.peer.close();
+  await host.room.handleClose(first.webSocket.peer);
+  assert.ok(host.room.core.s.hostDisconnectedAt,'host disconnect should create failover deadline');
+  const recovered=await invitedSocket(env,room,inv,claim);
+  assert.equal(recovered.status,101);
+  await host.room.webSocketMessage(recovered.webSocket.peer,JSON.stringify({action:'join',name:'Recovered host'}));
+  assert.equal(recovered.webSocket.messages.find(m=>m.type==='joined')?.id,seat.id);
+  assert.equal(host.room.core.s.hostDisconnectedAt,null,
+    'a recovered invited host must cancel its failover alarm exactly like a normal resume');
+  assert.equal(host.room.core.s.host,seat.id);
+  assert.equal((await host.room.ctx.storage.get('room')).hostDisconnectedAt,null,
+    'cleared failover deadline must survive hibernation');
+});
