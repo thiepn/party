@@ -186,7 +186,7 @@ export class PartyRoom {
             const seat=this.core.player(invited.playerId);
             if(!seat)throw new RoomError('Invitation seat unavailable.');
             const previous=this.wsFor(seat),nonce=crypto.randomUUID();
-            seat.connected=true;seat.nonce=nonce;
+            seat.connected=true;seat.nonce=nonce;if(s.host===seat.id)s.hostDisconnectedAt=null;
             ws.serializeAttachment({pid:seat.id,nonce});
             await this.save();
             if(previous&&previous!==ws)try{previous.close(4001,'Session recovered');}catch{}

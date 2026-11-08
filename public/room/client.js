@@ -107,7 +107,11 @@
         pendingSubmit=null;connecting=false;render();
       }
     };
-    ws.onerror=()=>{if(ws!==sock)return;error=T('Cannot reach the secure room service.','Der sichere Raumserver ist nicht erreichbar.');};
+    ws.onerror=()=>{
+      if(ws!==sock)return;
+      error=invited?T('Private invitation unavailable. Use room-code joining instead.','Private Einladung nicht verfügbar. Tritt stattdessen mit dem Raumcode bei.'):
+        T('Cannot reach the secure room service.','Der sichere Raumserver ist nicht erreichbar.');
+    };
     ws.onclose=()=>{
       if(ws!==sock)return;
       connecting=false;pendingSubmit=null;
@@ -181,7 +185,7 @@
       }
     }
   }
-  function landing(){return `<section class="hero"><div class="eyebrow">${T('Play together on separate phones','Zusammen auf mehreren Handys')}</div><h1>${T('THE SAME PARTY. ONE ROOM.','EINE PARTY. EIN RAUM.')}</h1><p class="sub">${T('Create a room online, share the link, and play on your own phones. No computer server needed.','Erstelle online einen Raum, teile den Link und spielt auf euren eigenen Handys. Kein Computer-Server nötig.')}</p></section><div class="grid"><section class="panel"><h2>${T('Create room','Raum erstellen')}</h2><form data-form="create"><label class="field" for="host-name">${T('Your name','Dein Name')}</label><input class="input" id="host-name" data-draft="host-name" autocomplete="nickname" maxlength="24" required placeholder="${T('Host','Host')}">${btn(T('Create private room','Privaten Raum erstellen'),'create')}</form></section><section class="panel"><h2>${T('Join room','Raum beitreten')}</h2><form data-form="join"><label class="field" for="join-name">${T('Your name','Dein Name')}</label><input id="join-name" class="input" maxlength="24" data-draft="join-name" autocomplete="nickname" required><label class="field" for="join-code">${T('Room code','Raumcode')}</label><input id="join-code" class="input joincode" maxlength="8" data-draft="join-code" value="${esc(urlJoin)}" required>${btn(T('Join','Beitreten'),'join')}</form></section></div>${token()?`<div class="panel">${btn(T('Reconnect to your saved seat','Gespeicherten Platz wiederherstellen'),'resume',{secondary:true})} ${btn(T('Use a different seat','Anderen Platz verwenden'),'forget',{secondary:true})}</div>`:''}`;}
+  function landing(){return `<section class="hero"><div class="eyebrow">${T('Play together on separate phones','Zusammen auf mehreren Handys')}</div><h1>${T('THE SAME PARTY. ONE ROOM.','EINE PARTY. EIN RAUM.')}</h1><p class="sub">${T('Create a room online, share the link, and play on your own phones. No computer server needed.','Erstelle online einen Raum, teile den Link und spielt auf euren eigenen Handys. Kein Computer-Server nötig.')}</p></section><div class="grid"><section class="panel"><h2>${T('Create room','Raum erstellen')}</h2><form data-form="create"><label class="field" for="host-name">${T('Your name','Dein Name')}</label><input class="input" id="host-name" data-draft="host-name" autocomplete="nickname" maxlength="24" required placeholder="${T('Host','Host')}">${btn(T('Create private room','Privaten Raum erstellen'),'create')}</form></section><section class="panel"><h2>${T('Join room','Raum beitreten')}</h2><form data-form="join"><label class="field" for="join-name">${T('Your name','Dein Name')}</label><input id="join-name" class="input" maxlength="24" data-draft="join-name" autocomplete="nickname" required><label class="field" for="join-code">${T('Room code','Raumcode')}</label><input id="join-code" class="input joincode" maxlength="8" data-draft="join-code" value="${esc(urlJoin)}" required>${btn(T('Join','Beitreten'),'join')}</form></section></div>${pendingGuestInvite?'<div class="panel">'+btn(T('Use room code without invitation','Ohne Einladung mit Raumcode beitreten'),'discard-invite',{secondary:true})+'</div>':''}${token()?`<div class="panel">${btn(T('Reconnect to your saved seat','Gespeicherten Platz wiederherstellen'),'resume',{secondary:true})} ${btn(T('Use a different seat','Anderen Platz verwenden'),'forget',{secondary:true})}</div>`:''}`;}
   function people(){return `<div class="panel"><h2>${T('Players','Spieler')} · ${state.players.length}/6</h2>${state.players.map(p=>`<div class="person"><strong>${esc(p.name)}</strong>${p.id===state.host?`<span class="pill">Host</span>`:''}${p.id===state.you?`<span class="pill">${T('You','Du')}</span>`:''}<span class="pill ${p.connected?'good':'bad'}">${p.connected?T('Connected','Verbunden'):T('Offline','Offline')}</span>${state.isHost&&p.id!==state.host&&p.connected?`<button class="chip" data-action="transfer" data-value="${p.id}">${T('Make host','Host übertragen')}</button>`:''}${state.isHost&&state.stage==='lobby'&&!p.connected&&p.id!==state.host?`<button class="chip" data-action="kick" data-value="${p.id}">${T('Remove','Entfernen')}</button>`:''}</div>`).join('')}</div>`;}
   function invitationPanel(){
     if(!state?.isHost||state.stage!=='lobby')return '';
@@ -321,6 +325,9 @@
       if(link){try{await navigator.clipboard.writeText(link);error=T('Private invite copied.','Private Einladung kopiert.');}
         catch{error=T('Copy this private invitation: ','Diese private Einladung kopieren: ')+link;}}
       render();return;
+    }
+    if(act==='discard-invite'){
+      pendingGuestInvite=null;sessionStorage.removeItem(guestInviteKey);error='';render();return;
     }
     if(act==='resume'){connect({action:'resume',...seat});return;}
     if(act==='forget'){reconnectDraft=null;pendingSubmit=null;stopReconnect=true;if(sock)sock.close();sock=null;seat=null;state=null;localStorage.removeItem(storeKey);error='';render();return;}
