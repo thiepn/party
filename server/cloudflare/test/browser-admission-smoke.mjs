@@ -13,6 +13,11 @@ try{
   hostContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   guestContext=await browser.newContext({viewport:{width:1280,height:900}});
   const host=await hostContext.newPage(),guest=await guestContext.newPage();
+  await host.addInitScript(()=>{
+    Object.defineProperty(navigator,'clipboard',{configurable:true,value:{
+      writeText:async text=>{window.__copiedInvitation=text;}
+    }});
+  });
   for(const page of [host,guest]){
     page.on('pageerror',e=>errors.push(e.message));
   }
@@ -29,12 +34,37 @@ try{
   await lobby(host,1);
   const hostSeat=await host.evaluate(()=>JSON.parse(localStorage.getItem('chaosclub.28.seat')));
   assert.equal(hostSeat.code,code);
-  await guest.goto(origin+'/room/?room='+code,{waitUntil:'load'});
+  await host.locator('[data-action="invite_issue"]').click();
+  await host.locator('[data-action="copy-protected"]').waitFor({timeout:12000});
+  await host.locator('[data-action="copy-protected"]').click();
+  const inviteURL=await host.evaluate(()=>window.__copiedInvitation);
+  assert.ok(inviteURL?.startsWith(origin+'/room/?room='+code+'#invite='),'host must copy private invitation link');
+  assert.match(inviteURL.split('#invite=')[1],/^[0-9a-f]{64}$/);
+  // Five hostile anonymous sockets have the right Origin but no invitation proof.
+  const held=await host.evaluate(async roomCode=>{
+    window.__admissionFlood=[];
+    for(let i=0;i<5;i++){
+      const socket=new WebSocket('ws://localhost:8787/ws?code='+roomCode);
+      await new Promise((resolve,reject)=>{
+        const timeout=setTimeout(()=>reject(new Error('Pending anonymous socket timed out')),5000);
+        socket.onopen=()=>{clearTimeout(timeout);resolve();};
+        socket.onerror=()=>{clearTimeout(timeout);reject(new Error('Anonymous socket rejected unexpectedly'));};
+      });
+      window.__admissionFlood.push(socket);
+    }
+    return window.__admissionFlood.length;
+  },code);
+  assert.equal(held,5);
+  await guest.goto(inviteURL,{waitUntil:'load'});
+  assert.equal(await guest.evaluate(()=>location.hash),'','guest bearer token must disappear from address bar');
   await guest.locator('#join-name').fill('Browser Guest');
   await guest.locator('form[data-form="join"] button').click();
   await lobby(guest,2);
   await lobby(host,2);
   assert.equal(await guest.locator('.person').filter({hasText:'Browser Guest'}).count(),1);
+  assert.equal(await guest.evaluate(()=>sessionStorage.getItem('chaosclub.28.pendingInvite')),null,
+    'guest recovery claim must clear after persisted join');
+  await host.evaluate(()=>window.__admissionFlood.forEach(s=>s.close()));
   const initial=await guest.evaluate(()=>JSON.parse(localStorage.getItem('chaosclub.28.seat')));
   assert.equal(initial.code,code);
   assert.notEqual(initial.id,hostSeat.id);
@@ -72,7 +102,7 @@ try{
   assert.deepEqual(scores,{'Browser Host':1,'Browser Guest':1,'Browser 2':1,'Browser 3':0},
     'three-vote browser majority must be awarded exactly once');
   assert.equal(errors.length,0,'browser must not throw during creation/join/reconnect: '+errors.join('; '));
-  console.log('LOCAL_'+engine.toUpperCase()+'_BROWSER_ADMISSION_PASS',JSON.stringify({engine,mobileHost:true,desktopGuest:true,players:4,roomCodeValid:true,reconnectTokenRotated:true,parallelSubmissions:true,majorityScoring:true,pageErrors:0}));
+  console.log('LOCAL_'+engine.toUpperCase()+'_BROWSER_ADMISSION_PASS',JSON.stringify({engine,mobileHost:true,desktopGuest:true,players:4,protectedGuestInvite:true,anonymousFlood:5,inviteFragmentRemoved:true,roomCodeValid:true,reconnectTokenRotated:true,parallelSubmissions:true,majorityScoring:true,pageErrors:0}));
 }finally{
   for(const ctx of extraContexts)await ctx.close();
   await guestContext?.close();

@@ -444,3 +444,60 @@ test('invitation claim rollback after persistent storage failure remains redeema
   assert.ok(admitted.webSocket.messages.some(x=>x.type==='joined'));
   assert.equal(host.room.core.s.players.length,2);
 });
+
+
+test('two simultaneous handshakes cannot both occupy the same protected invitation',async()=>{
+  const {env,room,host}=await makeHostForInvites(),inv=await issued(host);
+  const [a,b]=await Promise.all([
+    invitedSocket(env,room,inv,claimString(51)),
+    invitedSocket(env,room,inv,claimString(52))
+  ]);
+  assert.deepEqual([a.status,b.status].sort(),[101,429],
+    'at most one open unredeemed connection per invitation');
+  const winner=a.status===101?a:b;
+  const claim=a.status===101?claimString(51):claimString(52);
+  await host.room.webSocketMessage(winner.webSocket.peer,JSON.stringify({action:'join',name:'One seat'}));
+  assert.equal(host.room.core.s.players.length,2);
+  assert.equal((await invitedSocket(env,room,inv,claimString(53))).status,403,
+    'redeemed token cannot be reassigned to a different claimant');
+  const recovered=await invitedSocket(env,room,inv,claim);
+  assert.equal(recovered.status,101,'original claimant may recover');
+});
+test('invitation expiry frees a manual seat and blocks stale priority proof',async()=>{
+  const {env,room,host}=await makeHostForInvites(),inv=await issued(host);
+  const stored=host.room.core.s.invitations.find(x=>x.id===inv.id);
+  stored.expiresAt=Date.now()-10_000;
+  await host.room.alarm();
+  assert.equal((await invitedSocket(env,room,inv,claimString(54))).status,403);
+  const manual=await connect(env,room.code);
+  await manual.send({action:'join',name:'Manual after expiry'});
+  assert.ok(pop(manual,'joined').token);
+  assert.equal(host.room.core.s.players.length,2);
+});
+test('host failover and gameplay start revoke unredeemed invitations without touching redeemed seats',async()=>{
+  const {env,room,host}=await makeHostForInvites();
+  const a=await issued(host),b=await issued(host);
+  const claimed=await invitedSocket(env,room,a,claimString(55));
+  assert.equal(claimed.status,101);
+  await host.room.webSocketMessage(claimed.webSocket.peer,JSON.stringify({action:'join',name:'Redeemed'}));
+  const joined=claimed.webSocket.messages.find(x=>x.type==='joined');
+  assert.ok(joined);
+  const oldHostId=pop(host,'joined').id;
+  host.server.close();await host.room.handleClose(host.server);
+  host.room.core.s.hostDisconnectedAt=Date.now()-16_000;
+  await host.room.alarm();
+  assert.equal(host.room.core.s.host,joined.id,'connected redeemed guest becomes host');
+  assert.notEqual(host.room.core.s.host,oldHostId);
+  assert.equal((await invitedSocket(env,room,b,claimString(56))).status,403,'old host invite invalidated');
+  const replacement=await issued({send:m=>host.room.webSocketMessage(claimed.webSocket.peer,JSON.stringify(m)),
+    cli:claimed.webSocket});
+  assert.ok(replacement);
+  const c=await connect(env,room.code);
+  await c.send({action:'join',name:'Third'});
+  const d=await connect(env,room.code);
+  await d.send({action:'join',name:'Fourth'});
+  await host.room.webSocketMessage(claimed.webSocket.peer,JSON.stringify({action:'invite_revoke',id:replacement.id}));
+  await host.room.webSocketMessage(claimed.webSocket.peer,JSON.stringify({action:'start',game:'social',mode:'majority',duration:'quick'}));
+  assert.equal(host.room.core.s.stage,'answer');
+  assert.equal(host.room.core.s.players.length,4);
+});

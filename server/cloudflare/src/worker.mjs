@@ -175,6 +175,7 @@ export class PartyRoom {
           if(!s.host)throw new RoomError('Wait for the host to create this room.');
           const name=safeString(data.name,24);
           if(!name)throw new RoomError('Enter a name.');
+          if(old.kind==='seat')throw new RoomError('Use existing seat credentials to reconnect.');
           const reserved=!!old.inviteHash;
           const invited=reserved?this.invitations().find(i=>i.hash===old.inviteHash&&i.expiresAt>Date.now()):null;
           if(reserved&&(!invited||invited.playerId&&(
